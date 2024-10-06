@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy E-Tickets - Putco Bus</title>
+    <link rel="stylesheet" href="CSS Bus.css">
+    
+    <script>
+        // JavaScript to handle form submission and e-ticket generation
+        function generateETicket(event) {
+            event.preventDefault(); // Prevent form from submitting
+
+            // Generate a unique code for the e-ticket
+            const uniqueCode = Math.random().toString(36).substring(2, 12);
+
+            // Get form data
+            const tripQuantity = document.getElementById('trip-quantity').value;
+            const departureLocation = "Your Location";
+            const arrivalLocation = "Destination";
+            const departureTime = "06:45";
+            const arrivalTime = "11:40";
+            const passengerName = "Your Name"; // This can be dynamically set by the user's input
+            
+
+            // Populate the e-ticket details
+            document.getElementById('departure-location').textContent = departureLocation;
+            document.getElementById('arrival-location').textContent = arrivalLocation;
+            document.getElementById('departure-time').textContent = departureTime;
+            document.getElementById('arrival-time').textContent = arrivalTime;
+            document.getElementById('passenger-name').textContent = passengerName;
+            document.getElementById('barcode-serial').textContent = uniqueCode;
+
+            // Display the e-ticket section
+            document.getElementById('eticket-display-section').style.display = 'block';
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <h1>Putco BusTracker</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="Bus app.html">Home</a></li>
+                <li><a href="buy-etickets.html" class="active">Buy E-Tickets</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="eticket-purchase-hero">
+        <div class="hero-content">
+            <h2>Purchase Your E-Tickets</h2>
+            <p>Select the number of e-tickets and enter your details to complete the purchase.</p>
+        </div>
+    </section>
+
+    <section id="eticket-purchase-section">
+        <div class="eticket-purchase-container">
+            <h2>Choose Your Plan</h2>
+            <div class="purchase-options">
+                <button class="btn scholar-btn">Scholar</button>
+                <button class="btn adult-btn">Adult</button>
+            </div>
+
+            <form id="eticket-purchase-form" onsubmit="generateETicket(event)">
+                <div class="form-group">
+                    <label for="trip-quantity">Number of E-Tickets</label>
+                    <select id="trip-quantity" name="trip_quantity" required>
+                        <option value="10">10 E-Tickets - R110</option>
+                        <option value="20">20 E-Tickets - R220</option>
+                        <option value="30">30 E-Tickets - R330</option>
+                        <option value="40">40 E-Tickets - R440</option>
+                        <option value="50">50 E-Tickets - R550</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="bus-tag-number">Bus Tag Card Number</label>
+                    <input type="text" id="bus-tag-number" name="bus_tag_number" required pattern="\d{16}" title="Please enter a 16-digit bus tag card number.">
+                </div>
+
+                <div class="form-group">
+                    <label for="card-number">Bank Card Number (Visa only)</label>
+                    <input type="text" id="card-number" name="card_number" required pattern="\d{16}" title="Please enter a 16-digit Visa card number.">
+                </div>
+
+                <div class="form-group">
+                    <label for="expiry-date">Expiry Date</label>
+                    <input type="month" id="expiry-date" name="expiry_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" required pattern="\d{3}" title="Please enter a valid 3-digit CVV.">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn submit-btn">Buy Now</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="eticket-display-section" style="display: none;">
+        <div class="eticket-display-container">
+            <h2>Your E-Ticket</h2>
+            <div class="eticket-card">
+                <div class="eticket-info">
+                    <p><strong>Departure:</strong> <span id="departure-location">Your Location</span> → <span id="arrival-location">Destination</span></p>
+                    <p><strong>Departure Time:</strong> <span id="departure-time">06:45</span></p>
+                    <p><strong>Arrival Time:</strong> <span id="arrival-time">11:40</span></p>
+                    <p><strong>Passenger:</strong> <span id="passenger-name">Your Name</span></p>
+                    <p><strong>Seat:</strong> <span id="seat-number">7</span></p>
+                </div>
+                <div class="eticket-barcode">
+                    <img src="barcode.png" alt="E-Ticket Barcode" id="barcode-image">
+                    <p id="barcode-serial">3eherkr63erthu</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; Putco Bus Application | Designed with care</p>
+    </footer>
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,90 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUTCO Bus App</title>
+    <link rel="stylesheet" href="CSS Bus.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+
+<body>
+    <header>
+        <div class="logo">
+            <h1>PUTCO Bus App</h1>
+        </div>
+        <nav>
+            <ul>
+                <!--li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#benefits">Benefits</a></li-->
+                <li><a href="contact us.html">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <div class="hero-content">
+            <h2>Welcome to the Putco Bus Tracker</h2>
+            <p>Track your bus in real-time, buy tickets online, and stay updated with our user-friendly app.</p>
+            <div class="buttons">
+                <a href="Buy trips.html">Buy Trips</a>
+                <a href="Live tracking.html">Live Tracking</a>
+                <a href="Check prices.html">Check Prices</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <h2>App Features</h2>
+        <div class="feature-box">
+            <div class="feature">
+                <h3>Real-Time Bus Tracking</h3>
+                <p>Never miss a bus again! Track your bus in real-time with our intuitive map interface.</p>
+            </div>
+            <div class="feature">
+                <h3>Online Ticket Purchase</h3>
+                <p>Buy your bus tickets online with ease, and avoid the hassle of standing in queues.</p>
+            </div>
+            <div class="feature">
+                <h3>Fare Information</h3>
+                <p>Get the latest updates on bus fares and find the best value trips for your route.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="benefits">
+        <h2>Why Use Our App?</h2>
+        <ul>
+            <li>Save time with online ticket purchasing.</li>
+            <li>Track buses easily with live GPS updates.</li>
+            <li>Get accurate fare information instantly.</li>
+            <li>Stay informed with real-time notifications.</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; Putco Bus Application| Simple Life</p>
+    </footer>
+
+    <script src="JS bus.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+            console.log('Service Worker registered with scope:', registration.scope);
+          }).catch(function(error) {
+            console.log('Service Worker registration failed:', error);
+          });
+        }
+      </script>
+      
+     
+      
+</body>
+</html>
+
+
+
+
