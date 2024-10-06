@@ -1,0 +1,16 @@
+{
+  "name": "Putco Bus App",
+  "short_name": "Putco App",
+  "description": "Track your bus in real-time, buy tickets online, and stay updated.",
+  "start_url": "/Bus app.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#008000",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

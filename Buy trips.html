@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy E-Tickets - Putco Bus</title>
+    <link rel="stylesheet" href="CSS Bus.css">
+    
+    <script>
+        // JavaScript to handle form submission and e-ticket generation
+        function generateETicket(event) {
+            event.preventDefault(); // Prevent form from submitting
+
+            // Generate a unique code for the e-ticket
+            const uniqueCode = Math.random().toString(36).substring(2, 12);
+
+            // Get form data
+            const tripQuantity = document.getElementById('trip-quantity').value;
+            const departureLocation = "Your Location";
+            const arrivalLocation = "Destination";
+            const departureTime = "06:45";
+            const arrivalTime = "11:40";
+            const passengerName = "Your Name"; // This can be dynamically set by the user's input
+            
+
+            // Populate the e-ticket details
+            document.getElementById('departure-location').textContent = departureLocation;
+            document.getElementById('arrival-location').textContent = arrivalLocation;
+            document.getElementById('departure-time').textContent = departureTime;
+            document.getElementById('arrival-time').textContent = arrivalTime;
+            document.getElementById('passenger-name').textContent = passengerName;
+            document.getElementById('barcode-serial').textContent = uniqueCode;
+
+            // Display the e-ticket section
+            document.getElementById('eticket-display-section').style.display = 'block';
+        }
+    </script>
+</head>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Putco BusTracker</title>
+    <style>
+        /* Header Styles */
+        body {
+            font-family: serif; /* For consistent serif font across the site */
+        }
+        header {
+            background-color: #003366; /* Blue background */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        nav {
+            text-align: right;
+            margin-right: 20px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styles */
+        .form-container {
+            padding: 20px;
+        }
+        input, select {
+            margin-bottom: 15px; /* Space between fields */
+            padding: 10px; /* Padding inside input/select fields */
+            width: 100%; /* Full width for fields */
+            box-sizing: border-box; /* Ensures padding is included in width */
+        }
+        .buy-button {
+            background-color: orange;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        .buy-button:hover {
+            background-color: darkorange;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: orange;
+            text-align: center;
+            padding: 15px;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Putco BusTracker</h1>
+        <nav>
+            <a href="Bus app.html">Home</a>
+            <a href="Buy trips.html">Buy E-Tickets</a>
+        </nav>
+    </header>
+
+    <!-- Main Form Section -->
+    <div class="form-container">
+        <h2>Purchase Your E-Tickets</h2>
+        <p>Select the number of e-tickets and enter your details to complete the purchase.</p>
+
+        <form action="#">
+            <label for="tickets">Number of E-Tickets</label>
+            <select id="tickets" name="tickets">
+                <option value="10">10 E-Tickets - R110</option>
+                <option value="20">20 E-Tickets - R220</option>
+                <option value="30">30 E-Tickets - R330</option>
+                <option value="40">40 E-Tickets - R440</option>
+                <option value="50">50 E-Tickets - R550</option>
+            </select>
+
+            <label for="bus-tag">Bus Tag Card Number</label>
+            <input type="text" id="bus-tag" name="bus-tag" placeholder="Enter your bus tag card number" required>
+
+            <label for="bank-card">Bank Card Number (Visa only)</label>
+            <input type="text" id="bank-card" name="bank-card" placeholder="Enter your Visa card number" required>
+
+            <label for="expiry-date">Expiry Date</label>
+            <input type="date" id="expiry-date" name="expiry-date" required>
+
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" name="cvv" placeholder="Enter CVV" required>
+
+            <button type="submit" class="buy-button">Buy Now</button>
+        </form>
+    </div>
+
+
+    <!-- Footer Section >
+    <footer>
+        &copy; Putco Bus Application | Designed with care
+    </footer-->
+</body>
+</html>
+
+
+
+
+
