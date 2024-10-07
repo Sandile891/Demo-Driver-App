@@ -1,15 +1,16 @@
+"display_override": ["window-controls-overlay", "standalone"]
 {
   "name": "Putco Bus App",
   "short_name": "Putco App",
   "name": "WebBoard: A Bus App"
-  "description": "Track your bus in real-time, buy tickets online, and stay updated.",
+  "description": "An app to live track buses, purchase e-tickets, and manage trips.",
   "start_url": "/Bus app.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#008000",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "ic.png",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -20,3 +21,11 @@
   id: "/?homescreen=1"
 }
 
+"handle_links": "auto"
+
+"protocol_handlers": [
+  {
+    "protocol": "mailto",
+    "url": "/email?to=mnisisandile16@gmail.com"
+  }
+]
