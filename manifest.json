@@ -1,12 +1,11 @@
-"display_override": ["window-controls-overlay", "standalone"]
 {
   "id": "/PutcoBusApp",
   "name": "Putco Bus App",
   "short_name": "Putco App",
-  "name": "WebBoard: A Bus App"
   "description": "An app to live track buses, purchase e-tickets, and manage trips.",
   "start_url": "https://sandile891.github.io/Putco-Bus-App/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#ffffff",
   "theme_color": "#008000",
   "icons": [
@@ -14,67 +13,59 @@
       "src": "/assets/ic.png",
       "sizes": "512x512",
       "type": "image/png",
-      "type": "image/png",
       "purpose": "any"
+    }
+  ],
+  "handle_links": "auto",
+  "protocol_handlers": [
+    {
+      "protocol": "mailto",
+      "url": "/email?to=mnisisandile16@gmail.com"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link",
+      "files": [
+        {
+          "name": "image",
+          "accept": ["image/*"]
+        }
+      ]
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "Buy Tickets",
+      "short_name": "Tickets",
+      "description": "Quick access to ticket purchase",
+      "url": "/tickets",
+      "icons": [
+        {
+          "src": "/images/ticket-icon.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Track Bus",
+      "short_name": "Track",
+      "description": "Track your bus in real-time",
+      "url": "/track",
+      "icons": [
+        {
+          "src": "/assets/ic.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
 
-{
-  id: "/?homescreen=1"
-}
-
-"handle_links": "auto"
-
-"protocol_handlers": [
-  {
-    "protocol": "mailto",
-    "url": "/email?to=mnisisandile16@gmail.com"
-  }
-]
-
-"share_target": {
-  "action": "/share",
-  "method": "POST",
-  "enctype": "multipart/form-data",
-  "params": {
-    "title": "name",
-    "text": "description",
-    "url": "link",
-    "files": [
-      {
-        "name": "image",
-        "accept": ["image/*"]
-      }
-    ]
-  }
-}
-
-"shortcuts": [
-  {
-    "name": "Buy Tickets",
-    "short_name": "Tickets",
-    "description": "Quick access to ticket purchase",
-    "url": "/tickets",
-    "icons": [
-      {
-        "src": "/images/ticket-icon.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      }
-    ]
-  },
-  {
-    "name": "Track Bus",
-    "short_name": "Track",
-    "description": "Track your bus in real-time",
-    "url": "/track",
-    "icons": [
-      {
-        "src": "/assets/ic.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      }
-    ]
-  }
-]
