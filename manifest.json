@@ -1,5 +1,6 @@
 "display_override": ["window-controls-overlay", "standalone"]
 {
+  "id": "/PutcoBusApp",
   "name": "Putco Bus App",
   "short_name": "Putco App",
   "name": "WebBoard: A Bus App"
@@ -10,9 +11,11 @@
   "theme_color": "#008000",
   "icons": [
     {
-      "src": "ic.png",
+      "src": "/assets/ic.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
