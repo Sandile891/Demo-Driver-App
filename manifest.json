@@ -1,53 +1,32 @@
 {
-  "id": "/PutcoBusApp",
   "name": "Putco Bus App",
   "short_name": "Putco App",
   "description": "An app to live track buses, purchase e-tickets, and manage trips.",
   "start_url": "https://sandile891.github.io/Putco-Bus-App/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#ffffff",
   "theme_color": "#008000",
   "icons": [
     {
-      "src": "/ic.png",
+      "src": "/ic.png",  // Replace with your actual image file name in the root
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
-  ],
-  "handle_links": "auto",
-  "protocol_handlers": [
+      "type": "image/png"
+    },
     {
-      "protocol": "mailto",
-      "url": "/email?to=mnisisandile16@gmail.com"
+      "src": "/your-image-192.png",  // Replace with your smaller image file name in the root
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ],
-  "share_target": {
-    "action": "/share",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "name",
-      "text": "description",
-      "url": "link",
-      "files": [
-        {
-          "name": "image",
-          "accept": ["image/*"]
-        }
-      ]
-    }
-  },
   "shortcuts": [
     {
       "name": "Buy Tickets",
       "short_name": "Tickets",
       "description": "Quick access to ticket purchase",
-      "url": "/Buy trips.html",
+      "url": "/Buying trips.html",  // Correct link to your buying trips file
       "icons": [
         {
-          "src": "/images/ticket-icon.png",
+          "src": "/your-image-192.png",  // Replace with your icon for shortcut
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -57,10 +36,10 @@
       "name": "Track Bus",
       "short_name": "Track",
       "description": "Track your bus in real-time",
-      "url": "/Live tracking.html",
+      "url": "/Live tracking.html",  // Correct link to your live tracking file
       "icons": [
         {
-          "src": "ic.png",
+          "src": "/your-image-192.png",  // Replace with your icon for shortcut
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -68,4 +47,3 @@
     }
   ]
 }
-
