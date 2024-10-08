@@ -61,3 +61,40 @@ self.addEventListener('push', function(event) {
   );
 });
 
+// Listen for Push Events
+self.addEventListener('push', function(event) {
+  console.log('Push event received:', event);
+
+  // Extract the payload data from the event
+  const data = event.data ? event.data.json() : { title: 'Default title', body: 'Default message' };
+
+  // Options for the notification
+  const options = {
+    body: data.body,  // The message body
+    icon: '/icons/icon-512.png',  // Your app icon
+    badge: '/icons/icon-badge.png',  // A smaller icon
+    vibrate: [100, 50, 100],  // Vibration pattern
+    tag: 'push-notification',  // Notification tag
+  };
+
+  // Display the notification
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+// Handle Notification Click
+self.addEventListener('notificationclick', function(event) {
+  console.log('Notification click event:', event);
+
+  event.notification.close();  // Close the notification
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then(function(clientList) {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+      return clients.openWindow('/');  // Redirect to your app
+    })
+  );
+});
