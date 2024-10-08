@@ -1,49 +1,16 @@
 {
   "name": "Putco Bus App",
   "short_name": "Putco App",
-  "description": "An app to live track buses, purchase e-tickets, and manage trips.",
-  "start_url": "https://sandile891.github.io/Putco-Bus-App/",
+  "description": "Track your bus in real-time, buy tickets online, and stay updated.",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#008000",
   "icons": [
     {
-      "src": "/ic.png",  // Replace with your actual image file name in the root
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "/ic.png",  // Replace with your smaller image file name in the root
+      "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Buy Tickets",
-      "short_name": "Tickets",
-      "description": "Quick access to ticket purchase",
-      "url": "/Buying trips.html",  // Correct link to your buying trips file
-      "icons": [
-        {
-          "src": "/ic.png",  // Replace with your icon for shortcut
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Track Bus",
-      "short_name": "Track",
-      "description": "Track your bus in real-time",
-      "url": "/Live tracking.html",  // Correct link to your live tracking file
-      "icons": [
-        {
-          "src": "/ic.png",  // Replace with your icon for shortcut
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
     }
   ]
 }
