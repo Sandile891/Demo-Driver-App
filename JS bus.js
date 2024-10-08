@@ -19,12 +19,12 @@ self.addEventListener('install', function(event) {
           '/manifest.json',
           '/CSS Bus.css',
           '/JS bus.js',
-          '/ic.png',
+          '/icon.png',
         ]);
       })
     );
   });
-
+  
   self.addEventListener('fetch', function(event) {
     event.respondWith(
       caches.match(event.request).then(function(response) {
@@ -32,30 +32,4 @@ self.addEventListener('install', function(event) {
       })
     );
   });
-
-//
-
-self.addEventListener('push', function(event) {
-  var options = {
-    body: event.data.text(),
-    icon: '/images/icon.png',
-    badge: '/images/badge.png'
-  };
-
-  event.waitUntil(
-    self.registration.showNotification('Putco Bus App', options)
-  );
-});
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(function(registration) {
-        console.log('Service Worker registered with scope:', registration.scope);
-      }, function(err) {
-        console.log('Service Worker registration failed:', err);
-      });
-  });
-}
-
   
