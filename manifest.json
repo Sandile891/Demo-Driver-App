@@ -8,30 +8,30 @@
   "theme_color": "#008000",
   "icons": [
     {
-      "src": "/putco-bus-app/ic.png",
+      "src": "https://sandile891.github.io/Putco-Bus-App/ic.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/putco-bus-app/icc.png",
+      "src": "https://sandile891.github.io/Putco-Bus-App/icc.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "/putco-bus-app/icn.png",
+      "src": "https://sandile891.github.io/Putco-Bus-App/icn.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
   "screenshots": [
     {
-      "src": "/putco-bus-app/screen.png",
+      "src": "https://sandile891.github.io/Putco-Bus-App/screen.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/putco-bus-app/shot.png",
+      "src": "https://sandile891.github.io/Putco-Bus-App/shot.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow"
