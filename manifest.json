@@ -13,7 +13,7 @@
       "type": "image/png"
     },
     {
-      "src": "/your-image-192.png",  // Replace with your smaller image file name in the root
+      "src": "/ic.png",  // Replace with your smaller image file name in the root
       "sizes": "192x192",
       "type": "image/png"
     }
@@ -26,7 +26,7 @@
       "url": "/Buying trips.html",  // Correct link to your buying trips file
       "icons": [
         {
-          "src": "/your-image-192.png",  // Replace with your icon for shortcut
+          "src": "/ic.png",  // Replace with your icon for shortcut
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -39,7 +39,7 @@
       "url": "/Live tracking.html",  // Correct link to your live tracking file
       "icons": [
         {
-          "src": "/your-image-192.png",  // Replace with your icon for shortcut
+          "src": "/ic.png",  // Replace with your icon for shortcut
           "sizes": "192x192",
           "type": "image/png"
         }
