@@ -15,16 +15,16 @@ self.addEventListener('install', function(event) {
       caches.open('v1').then(function(cache) {
         return cache.addAll([
           '/',
-          '/Bus app.html',
+          '/index.html',
           '/manifest.json',
           '/CSS Bus.css',
           '/JS bus.js',
-          '/icon.png',
+          '/ic.png',
         ]);
       })
     );
   });
-  
+
   self.addEventListener('fetch', function(event) {
     event.respondWith(
       caches.match(event.request).then(function(response) {
