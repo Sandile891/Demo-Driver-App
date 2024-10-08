@@ -2,7 +2,7 @@ const CACHE_NAME = 'putco-bus-app-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/assets/ic.png',
+  '/ic.png',
   '/assets/CSS Bus.css',
   '/assets/JS bus.js',
 ];
