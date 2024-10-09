@@ -75,11 +75,5 @@ if ('serviceWorker' in navigator) {
           });
   });
 }
-////
-navigator.serviceWorker.register('/Putco-Bus-App/service-worker.js', { scope: '/Putco-Bus-App/' })
-.then(function(registration) {
-    console.log('Service Worker registered with scope:', registration.scope);
-}).catch(function(error) {
-    console.log('Service Worker registration failed:', error);
-});
+
 
