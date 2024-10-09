@@ -62,64 +62,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
   });
 });
 
-//////
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/PutcoBusApp/service-worker.js')
-    .then(function(registration) {
-      console.log('Service Worker registered with scope:', registration.scope);
-    })
-    .catch(function(error) {
-      console.log('Service Worker registration failed:', error);
-    });
-}
 
-// Register background sync
-navigator.serviceWorker.ready.then(function(swRegistration) {
-  return swRegistration.sync.register('syncBusUpdates');
-});
-
-// Periodic Sync
-navigator.permissions.query({ name: 'periodic-background-sync' }).then((result) => {
-  if (result.state === 'granted') {
-    navigator.serviceWorker.ready.then((registration) => {
-      registration.periodicSync.register({
-        tag: 'syncBusUpdates', 
-        minInterval: 24 * 60 * 60 * 1000  // Once a day
-      });
-    });
-  }
-});
-
-navigator.serviceWorker.ready.then(function(registration) {
-  registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: '<YOUR_PUBLIC_KEY>'
-  }).then(function(subscription) {
-    console.log('User is subscribed:', subscription);
-  }).catch(function(err) {
-    console.log('Failed to subscribe user: ', err);
-  });
-});
-
-------
-
-    const CACHE_NAME = 'cool-cache';
-
-// Add whichever assets you want to pre-cache here:
-const PRECACHE_ASSETS = [
-    '/assets/',
-    '/src/'
-]
-
-// Listener for the install event - pre-caches our assets list on service worker install.
-self.addEventListener('install', event => {
-    event.waitUntil((async () => {
-        const cache = await caches.open(CACHE_NAME);
-        cache.addAll(PRECACHE_ASSETS);
-    })());
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
-});
+  
