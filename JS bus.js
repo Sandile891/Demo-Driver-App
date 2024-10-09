@@ -76,23 +76,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 ////
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-        .then((registration) => {
-            console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch((error) => {
-            console.error('Service Worker registration failed:', error);
-        });
-}
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/Putco-Bus-App/service-worker.js')
-        .then(function(registration) {
-            console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(function(error) {
-            console.error('Service Worker registration failed:', error);
-        });
-}
+navigator.serviceWorker.register('/Putco-Bus-App/service-worker.js', { scope: '/Putco-Bus-App/' })
+.then(function(registration) {
+    console.log('Service Worker registered with scope:', registration.scope);
+}).catch(function(error) {
+    console.log('Service Worker registration failed:', error);
+});
 
