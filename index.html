@@ -78,6 +78,19 @@
             console.log("Encoded JWT ID token: " + response.credential);
             // You will send this token to your server for verification later
         }
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+              console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch((error) => {
+              console.error('Service Worker registration failed:', error);
+          });
+  });
+}
+      
     </script>
     
     <section id="features">
