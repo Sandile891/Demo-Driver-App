@@ -5,8 +5,6 @@ const urlsToCache = [
   '/manifest.json',
   '/CSS Bus.css', // Add your CSS files here
   '/JS bus.js',  // Add your JavaScript files here
-  '/ic.png',
-  '/icc.png',
   // Add other assets like images, etc.
 ];
 
