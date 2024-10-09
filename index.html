@@ -11,17 +11,7 @@
 </head>
 
 <body>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-      console.log('ServiceWorker registration successful with scope: ', registration.scope);
-    }, function(err) {
-      console.log('ServiceWorker registration failed: ', err);
-    });
-  });
-}
-
-     <header>
+    <header>
         <div class="logo">
             <h1>PUTCO Bus App</h1>
         </div>
@@ -44,6 +34,17 @@ if ('serviceWorker' in navigator) {
                 </div>
             </div>
             </section>
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }, function(err) {
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
+     
     </body>      
 
 <head>    
