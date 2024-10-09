@@ -46,3 +46,13 @@ self.addEventListener('activate', function(event) {
     })
   );
 });
+
+const CACHE_NAME = 'pwa-cache-v1';
+const urlsToCache = [
+  '/Putco-Bus-App/',  // Root
+  '/Putco-Bus-App/index.html',
+  '/Putco-Bus-App/manifest.json',
+  '/Putco-Bus-App/CSS%20Bus.css', // Ensure the URL encoding is correct for spaces
+  '/Putco-Bus-App/JS%20bus.js',
+  // Add other assets like images
+];
