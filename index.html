@@ -11,7 +11,17 @@
 </head>
 
 <body>
-    <header>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }, function(err) {
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
+
+     <header>
         <div class="logo">
             <h1>PUTCO Bus App</h1>
         </div>
