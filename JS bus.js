@@ -75,4 +75,3 @@ if ('serviceWorker' in navigator) {
           });
   });
 }
-
