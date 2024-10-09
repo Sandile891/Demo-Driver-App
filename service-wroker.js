@@ -1,70 +1,52 @@
-const CACHE_NAME = 'putco-bus-app-cache-v1';
+const CACHE_NAME = 'putco-bus-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/ic.png',
-  '/assets/CSS Bus.css',
-  '/assets/JS bus.js',
+  '/CSS Bus.css',
+  '/JS bus.js',
+  '/ic.png'
 ];
-self.addEventListener('install', event => {
-  // Perform install steps
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-  );
-});
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-  );
-});
-self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
-[[[[[[[
 
-  self.addEventListener('install', (event) => {
+// Install event: Cache files
+self.addEventListener('install', function(event) {
   event.waitUntil(
-    caches.open('pwa-cache').then((cache) => {
-      return cache.addAll([
-        '/index.html',
-        '/Live tracking.html',
-        '/Buying trips.html',
-        '/ic.png',
-        '/ic.png',
-        // Add other assets you want to cache
-      ]);
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.addAll(urlsToCache);
     })
   );
 });
 
-self.addEventListener('fetch', (event) => {
+// Fetch event: Serve cached files when offline
+self.addEventListener('fetch', function(event) {
   event.respondWith(
-    caches.match(event.request).then((response) => {
+    caches.match(event.request).then(function(response) {
       return response || fetch(event.request);
     })
   );
 });
 
+// Background Sync
+self.addEventListener('sync', function(event) {
+  if (event.tag === 'syncBusUpdates') {
+    event.waitUntil(doBusUpdates());
+  }
+});
 
+// Periodic Sync
+self.addEventListener('periodicsync', function(event) {
+  if (event.tag === 'syncBusUpdates') {
+    event.waitUntil(doBusUpdates());
+  }
+});
+
+// Push Notifications
+self.addEventListener('push', function(event) {
+  const options = {
+    body: event.data.text(),
+    icon: 'icon.png',
+    badge: 'badge.png'
+  };
+  event.waitUntil(
+    self.registration.showNotification('Bus App Notification', options)
+  );
+});
