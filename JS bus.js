@@ -61,3 +61,43 @@ window.addEventListener('beforeinstallprompt', (e) => {
     });
   });
 });
+
+//////
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/PutcoBusApp/service-worker.js')
+    .then(function(registration) {
+      console.log('Service Worker registered with scope:', registration.scope);
+    })
+    .catch(function(error) {
+      console.log('Service Worker registration failed:', error);
+    });
+}
+
+// Register background sync
+navigator.serviceWorker.ready.then(function(swRegistration) {
+  return swRegistration.sync.register('syncBusUpdates');
+});
+
+// Periodic Sync
+navigator.permissions.query({ name: 'periodic-background-sync' }).then((result) => {
+  if (result.state === 'granted') {
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.periodicSync.register({
+        tag: 'syncBusUpdates', 
+        minInterval: 24 * 60 * 60 * 1000  // Once a day
+      });
+    });
+  }
+});
+
+navigator.serviceWorker.ready.then(function(registration) {
+  registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: '<YOUR_PUBLIC_KEY>'
+  }).then(function(subscription) {
+    console.log('User is subscribed:', subscription);
+  }).catch(function(err) {
+    console.log('Failed to subscribe user: ', err);
+  });
+});
