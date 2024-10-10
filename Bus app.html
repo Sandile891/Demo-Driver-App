@@ -22,6 +22,7 @@
     </header>
 
     <body>
+
             <section id="hero">
                 <div class="hero-content">
             <h2>Welcome to the Putco Bus Tracker</h2>
@@ -33,7 +34,10 @@
                 </div>
             </div>
             </section>
-    </body>      
+
+
+
+    </body>            
 
 <head>    
     <style>
@@ -77,6 +81,20 @@
             console.log("Encoded JWT ID token: " + response.credential);
             // You will send this token to your server for verification later
         }
+
+        if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+              console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch((error) => {
+              console.error('Service Worker registration failed:', error);
+          });
+  });
+}
+
+
     </script>
     
     <section id="features">
@@ -112,19 +130,7 @@
     </footer>
 
     <script src="JS bus.js"></script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-            console.log('Service Worker registered with scope:', registration.scope);
-          }).catch(function(error) {
-            console.log('Service Worker registration failed:', error);
-          });
-        }
-      </script>
-      
-     
-      
+  
 </body>
 </html>
 
