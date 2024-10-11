@@ -4,7 +4,8 @@ const urlsToCache = [
   'index.html',
   'manifest.json',
   'drivercss.css', // Add your CSS files here
-  'driverjs.js',  // Add your JavaScript files here
+  'driverjs.js',// Add your JavaScript files here
+  'shoot.png',
   // Add other assets like images, etc.
 ];
 
