@@ -129,16 +129,6 @@ if (document.querySelector('link[rel="manifest"]')) {
     console.log("Manifest link NOT found.");
 }
 
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-          .then(registration => {
-            console.log('Service Worker registered with scope:', registration.scope);
-          }).catch(error => {
-            console.log('Service Worker registration failed:', error);
-          });
-        });
-      }
       
       navigator.mediaDevices.getUserMedia({ video: true })
   .then(function(stream) {
@@ -202,7 +192,7 @@ self.addEventListener('install', function(event) {
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('service-worker.js')
             .then((registration) => {
                 console.log('Service Worker registered with scope:', registration.scope);
             })
