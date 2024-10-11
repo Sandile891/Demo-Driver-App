@@ -1,10 +1,10 @@
 const CACHE_NAME = 'pwa-cache-v1';
 const urlsToCache = [
   '/',
-  '/index.html',
-  '/manifest.json',
-  '/drivercss.css', // Add your CSS files here
-  '/driverjs.js',  // Add your JavaScript files here
+  'index.html',
+  'manifest.json',
+  'drivercss.css', // Add your CSS files here
+  'driverjs.js',  // Add your JavaScript files here
   // Add other assets like images, etc.
 ];
 
