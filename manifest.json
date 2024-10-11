@@ -1,0 +1,40 @@
+{
+  "name": "Putco Bus Driver App",
+  "short_name": "Putco Driver App",
+  "description": "Help bus be trackable for cutomers to know the bus location.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#008000",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logoA.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "logoB.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "lap.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "shot.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}
