@@ -25,7 +25,7 @@ header {
 /* Container */
 .container {
     padding: 20px;
-    max-width: 800px;
+    max-width: 400px;
     margin: 0 auto;
 }
 
@@ -53,7 +53,7 @@ button:hover {
 /* Barcode scanner */
 #scanner-container {
     width: 100%;
-    height: 300px;
+    height: 200px;
     background-color: var(--dark-grey);
     margin-bottom: 20px;
     display: flex;
@@ -76,15 +76,6 @@ footer {
 }
 
 ---------
-#scanner-container {
-    width: 100%;
-    height: 300px;
-    background-color: var(--dark-grey);
-    display: none; /* Hidden until camera starts */
-    margin-bottom: 20px;
-}
-
-
 /* Location status */
 #location-status {
     margin-top: 10px;
@@ -94,7 +85,7 @@ footer {
 
 #scanner-container {
     width: 50%; /* Adjust this width to your preference */
-    height: 300px; /* Set a reasonable height */
+    height: 200px; /* Set a reasonable height */
     border: 1px solid #ccc; /* Optional: Add a border for visibility */
     position: relative; /* Ensures the button stays within the container */
 }
