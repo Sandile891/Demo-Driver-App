@@ -14,8 +14,29 @@
         body {
             font-family: serif;
         }
-    </style>
 
+        /* Resize and center the scanner container */
+        #scanner-container {
+            width: 50%; /* Adjust this width */
+            height: 300px; /* Set a reasonable height */
+            border: 1px solid #ccc; /* Optional: Add a border for visibility */
+            position: relative; /* Ensure buttons stay inside */
+        }
+
+        /* Button styling */
+        #disable-camera-btn, #camera-btn, #stop-camera-btn {
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        #disable-camera-btn:hover, #camera-btn:hover, #stop-camera-btn:hover {
+            background-color: #e5533d; /* Darken button on hover */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -25,13 +46,10 @@
     <div class="container">
         <!-- Barcode Scanning Section -->
         <h2>Barcode Scanning</h2>
-        <button id="camera-btn">Start Camera</button>
-        <button id="stop-camera-btn" style="display:none;">Stop Camera</button>
+        <button id="camera-btn" onclick="startBarcodeScanner()">Start Camera</button>
+        <button id="stop-camera-btn" onclick="stopBarcodeScanner()" style="display:none;">Stop Camera</button>
+        
         <div id="scanner-container"></div>
-        <div id="scanner-container" style="position: relative;">
-    <button id="disable-camera-btn" onclick="stopBarcodeScanner()">Disable Camera</button>
-</div>
-
         <div id="barcode-result">Scan a ticket to see the result.</div>
 
         <!-- Location Tracking Section -->
@@ -39,7 +57,6 @@
         <button id="location-on-btn">Enable Location</button>
         <button id="location-off-btn" style="display:none;">Disable Location</button>
         <p id="location-status">Location status: Not enabled</p>
-        <div id="scanner-container" style="position: relative;">
     </div>
 
     <footer>
@@ -49,4 +66,3 @@
     <script src="driverjs.js"></script>
 </body>
 </html>
-
