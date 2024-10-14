@@ -92,3 +92,25 @@ footer {
 }
 
 
+#scanner-container {
+    width: 50%; /* Adjust this width to your preference */
+    height: 300px; /* Set a reasonable height */
+    border: 1px solid #ccc; /* Optional: Add a border for visibility */
+    position: relative; /* Ensures the button stays within the container */
+}
+
+#disable-camera-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000; /* Ensure the button stays above the camera feed */
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#disable-camera-btn:hover {
+    background-color: #e5533d; /* Darken button on hover */
+}
