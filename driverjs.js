@@ -1,10 +1,10 @@
-// Variables for toggling the camera and location
+Variables for toggling the camera and location
 let isCameraOn = false;
 let isLocationOn = false;
 let locationWatchId = null;
 
-// Initialize the barcode scanner
-function initializeBarcodeScanner() {
+// Start the barcode scanner using QuaggaJS
+function startBarcodeScanner() {
     Quagga.init({
         inputStream: {
             name: "Live",
@@ -23,53 +23,34 @@ function initializeBarcodeScanner() {
             alert("Failed to start camera. Please check camera permissions.");
             return;
         }
-    });
-}
-
-// Start the barcode scanner
-function startBarcodeScanner() {
-    if (!isCameraOn) {
         Quagga.start();
         isCameraOn = true;
         document.getElementById('scanner-container').style.display = 'block';
+    });
 
-        // Handle detected barcodes continuously
-        Quagga.onDetected(function(result) {
-            const barcode = result.codeResult.code;
-            document.getElementById('barcode-result').textContent = `Ticket ID: ${barcode}`;
+    // Handle detected barcode
+    Quagga.onDetected(function(result) {
+        const barcode = result.codeResult.code;
+        document.getElementById('barcode-result').textContent = `Ticket ID: ${barcode}`;
 
-            // Pause Quagga to prevent multiple detections of the same code
-            Quagga.pause();
-
-            // Send barcode data to the server for validation
-            fetch('/validate-ticket', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ ticketID: barcode })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.valid) {
-                    alert('Ticket is valid');
-                    // Delete ticket from Firestore
-                    deleteBarcodeFromFirestore(barcode);
-                } else {
-                    alert('Ticket is invalid');
-                }
-
-                // Resume scanning for the next barcode after validation
-                Quagga.start();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-
-                // Ensure scanning resumes even if an error occurs
-                Quagga.start();
-            });
-        });
-    }
+        // Send barcode data to server (mock example)
+        fetch('/validate-ticket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ticketID: barcode })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                alert('Ticket is valid');
+            } else {
+                alert('Ticket is invalid');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
 }
 
 // Stop the barcode scanner
@@ -81,27 +62,6 @@ function stopBarcodeScanner() {
     }
 }
 
-// Call this function once to initialize QuaggaJS
-initializeBarcodeScanner();
-
-// Button Event Listeners for starting/stopping the camera
-document.getElementById('camera-btn').addEventListener('click', () => {
-    startBarcodeScanner();
-    document.getElementById('camera-btn').style.display = 'none';
-    document.getElementById('stop-camera-btn').style.display = 'inline-block';
-});
-
-document.getElementById('stop-camera-btn').addEventListener('click', () => {
-    stopBarcodeScanner();
-    document.getElementById('stop-camera-btn').style.display = 'none';
-    docum).catch((error) => {
-        console.error("Error removing ticket: ", error);
-    });
-}
-//
-let isLocationOn = false;
-let locationWatchId = null;
-
 // Enable location tracking
 function enableLocation() {
     if (navigator.geolocation) {
@@ -111,23 +71,17 @@ function enableLocation() {
 
             document.getElementById('location-status').textContent = `Location enabled: Lat ${latitude}, Lng ${longitude}`;
 
-            // Optionally, send location to server
+            // Send location to server (mock example)
             fetch('/update-location', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ lat: latitude, lng: longitude })
-            }).then(response => response.json())
-            .then(data => {
-                console.log('Location updated on the server:', data);
-            })
-            .catch(error => {
-                console.error('Error sending location to server:', error);
             });
 
-        }, error => {
-            alert('Unable to access location. Error: ' + error.message);
+        }, () => {
+            alert('Unable to access location.');
         });
         isLocationOn = true;
     } else {
@@ -144,7 +98,19 @@ function disableLocation() {
     }
 }
 
-// Button Event Listeners for enabling/disabling location
+// Button Event Listeners
+document.getElementById('camera-btn').addEventListener('click', () => {
+    startBarcodeScanner();
+    document.getElementById('camera-btn').style.display = 'none';
+    document.getElementById('stop-camera-btn').style.display = 'inline-block';
+});
+
+document.getElementById('stop-camera-btn').addEventListener('click', () => {
+    stopBarcodeScanner();
+    document.getElementById('stop-camera-btn').style.display = 'none';
+    document.getElementById('camera-btn').style.display = 'inline-block';
+});
+
 document.getElementById('location-on-btn').addEventListener('click', () => {
     enableLocation();
     document.getElementById('location-on-btn').style.display = 'none';
@@ -157,24 +123,43 @@ document.getElementById('location-off-btn').addEventListener('click', () => {
     document.getElementById('location-on-btn').style.display = 'inline-block';
 });
 
-//                                                            
-
-// Firestore delete function after validating the ticket
-function deleteBarcodeFromFirestore(ticketID) {
-    const db = firebase.firestore();
-
-    // Assuming barcodes are stored in a collection called 'tickets'
-    db.collection("tickets").doc(ticketID).delete().then(() => {
-        console.log("Ticket successfully deleted!");
-    }
-
-// Check for manifest file presence
 if (document.querySelector('link[rel="manifest"]')) {
     console.log("Manifest link found.");
 } else {
     console.log("Manifest link NOT found.");
 }
 
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          }).catch(error => {
+            console.log('Service Worker registration failed:', error);
+          });
+        });
+      }
+      
+      navigator.mediaDevices.getUserMedia({ video: true })
+  .then(function(stream) {
+    // Success - camera started
+    const videoElement = document.querySelector('video');
+    videoElement.srcObject = stream;
+  })
+  .catch(function(error) {
+    console.log('Error accessing the camera: ', error);
+    // Handle different error cases
+    if (error.name === 'NotReadableError') {
+      alert('Camera is already in use by another application.');
+    } else if (error.name === 'NotAllowedError') {
+      alert('Camera access is not allowed. Please enable camera permissions.');
+    } else {
+      alert('Error accessing the camera: ' + error.message);
+    }
+  });
+
+  const canvas = document.createElement('canvas');
+const context = canvas.getContext('2d', { willReadFrequently: true });
 
 /////
 
@@ -217,7 +202,7 @@ self.addEventListener('install', function(event) {
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
+        navigator.serviceWorker.register('/service-worker.js')
             .then((registration) => {
                 console.log('Service Worker registered with scope:', registration.scope);
             })
@@ -226,12 +211,32 @@ self.addEventListener('install', function(event) {
             });
     });
   }
+  
+  let deferredPrompt;
 
-self.addEventListener('install', (event) => {
-    console.log('Service Worker installing...');
-});
-
-self.addEventListener('activate', (event) => {
-    console.log('Service Worker activating...');
-});
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
+    e.preventDefault();
+    // Store the event for later use
+    deferredPrompt = e;
+    
+    // Display your custom install button or message here
+    const installButton = document.getElementById('install-button');
+    installButton.style.display = 'block';
+  
+    installButton.addEventListener('click', () => {
+      // Show the install prompt
+      deferredPrompt.prompt();
+      // Wait for user response
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+        } else {
+          console.log('User dismissed the install prompt');
+        }
+        deferredPrompt = null; // Reset
+      });
+    });
+  });
+  
  
