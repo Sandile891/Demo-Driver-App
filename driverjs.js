@@ -134,7 +134,7 @@ document.getElementById('location-off-btn').addEventListener('click', () => {
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('service-worker.js')
             .then((registration) => {
                 console.log('Service Worker registered with scope:', registration.scope);
             })
@@ -144,18 +144,8 @@ if ('serviceWorker' in navigator) {
     });
 }
 ////
-if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-          .then(registration => {
-            console.log('Service Worker registered with scope:', registration.scope);
-          }).catch(error => {
-            console.log('Service Worker registration failed:', error);
-          });
-        });
-      }
-      
-      navigator.mediaDevices.getUserMedia({ video: true })
+
+           navigator.mediaDevices.getUserMedia({ video: true })
   .then(function(stream) {
     // Success - camera started
     const videoElement = document.querySelector('video');
@@ -214,19 +204,6 @@ self.addEventListener('install', function(event) {
   });
 
   /////
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then((registration) => {
-                console.log('Service Worker registered with scope:', registration.scope);
-            })
-            .catch((error) => {
-                console.error('Service Worker registration failed:', error);
-            });
-    });
-  }
-  
   let deferredPrompt;
 
   window.addEventListener('beforeinstallprompt', (e) => {
