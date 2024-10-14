@@ -53,6 +53,8 @@ function startBarcodeScanner() {
             .then(data => {
                 if (data.valid) {
                     alert('Ticket is valid');
+                    // Delete ticket from Firestore
+                    deleteBarcodeFromFirestore(barcode);
                 } else {
                     alert('Ticket is invalid');
                 }
@@ -82,19 +84,23 @@ function stopBarcodeScanner() {
 // Call this function once to initialize QuaggaJS
 initializeBarcodeScanner();
 
-// Example of how to use the toggle function with a button
-document.getElementById('toggle-camera-btn').addEventListener('click', function() {
-    if (isCameraOn) {
-        stopBarcodeScanner();
-    } else {
-        startBarcodeScanner();
-    }
+// Button Event Listeners for starting/stopping the camera
+document.getElementById('camera-btn').addEventListener('click', () => {
+    startBarcodeScanner();
+    document.getElementById('camera-btn').style.display = 'none';
+    document.getElementById('stop-camera-btn').style.display = 'inline-block';
+});
+
+document.getElementById('stop-camera-btn').addEventListener('click', () => {
+    stopBarcodeScanner();
+    document.getElementById('stop-camera-btn').style.display = 'none';
+    document.getElementById('camera-btn').style.display = 'inline-block';
 });
 
 // Firestore delete function after validating the ticket
 function deleteBarcodeFromFirestore(ticketID) {
     const db = firebase.firestore();
-    
+
     // Assuming barcodes are stored in a collection called 'tickets'
     db.collection("tickets").doc(ticketID).delete().then(() => {
         console.log("Ticket successfully deleted!");
@@ -103,62 +109,6 @@ function deleteBarcodeFromFirestore(ticketID) {
     });
 }
 
-// Example of validating and deleting a ticket
-fetch('/validate-ticket', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ ticketID: barcode })
-})
-.then(response => response.json())
-.then(data => {
-    if (data.valid) {
-        alert('Ticket is valid');
-        
-        // Delete ticket from Firestore
-        deleteBarcodeFromFirestore(barcode);
-    } else {
-        alert('Ticket is invalid');
-    }
-})
-.catch(error => console.error('Error:', error));
-
-//
-
-function enableLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
-}
-
-function showPosition(position) {
-    document.getElementById('location-status').textContent = 
-        "Latitude: " + position.coords.latitude + 
-        ", Longitude: " + position.coords.longitude;
-}
-
-function showError(error) {
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            alert("User denied the request for Geolocation.");
-            break;
-        case error.POSITION_UNAVAILABLE:
-            alert("Location information is unavailable.");
-            break;
-        case error.TIMEOUT:
-            alert("The request to get user location timed out.");
-            break;
-        case error.UNKNOWN_ERROR:
-            alert("An unknown error occurred.");
-            break;
-    }
-}
-
-
-  
 // Enable location tracking
 function enableLocation() {
     if (navigator.geolocation) {
@@ -195,19 +145,7 @@ function disableLocation() {
     }
 }
 
-// Button Event Listeners
-document.getElementById('camera-btn').addEventListener('click', () => {
-    startBarcodeScanner();
-    document.getElementById('camera-btn').style.display = 'none';
-    document.getElementById('stop-camera-btn').style.display = 'inline-block';
-});
-
-document.getElementById('stop-camera-btn').addEventListener('click', () => {
-    stopBarcodeScanner();
-    document.getElementById('stop-camera-btn').style.display = 'none';
-    document.getElementById('camera-btn').style.display = 'inline-block';
-});
-
+// Button Event Listeners for enabling/disabling location
 document.getElementById('location-on-btn').addEventListener('click', () => {
     enableLocation();
     document.getElementById('location-on-btn').style.display = 'none';
@@ -220,33 +158,12 @@ document.getElementById('location-off-btn').addEventListener('click', () => {
     document.getElementById('location-on-btn').style.display = 'inline-block';
 });
 
+// Check for manifest file presence
 if (document.querySelector('link[rel="manifest"]')) {
     console.log("Manifest link found.");
 } else {
     console.log("Manifest link NOT found.");
 }
-
-      
-      navigator.mediaDevices.getUserMedia({ video: true })
-  .then(function(stream) {
-    // Success - camera started
-    const videoElement = document.querySelector('video');
-    videoElement.srcObject = stream;
-  })
-  .catch(function(error) {
-    console.log('Error accessing the camera: ', error);
-    // Handle different error cases
-    if (error.name === 'NotReadableError') {
-      alert('Camera is already in use by another application.');
-    } else if (error.name === 'NotAllowedError') {
-      alert('Camera access is not allowed. Please enable camera permissions.');
-    } else {
-      alert('Error accessing the camera: ' + error.message);
-    }
-  });
-
-  const canvas = document.createElement('canvas');
-const context = canvas.getContext('2d', { willReadFrequently: true });
 
 /////
 
