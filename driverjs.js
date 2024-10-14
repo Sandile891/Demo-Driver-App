@@ -94,20 +94,13 @@ document.getElementById('camera-btn').addEventListener('click', () => {
 document.getElementById('stop-camera-btn').addEventListener('click', () => {
     stopBarcodeScanner();
     document.getElementById('stop-camera-btn').style.display = 'none';
-    document.getElementById('camera-btn').style.display = 'inline-block';
-});
-
-// Firestore delete function after validating the ticket
-function deleteBarcodeFromFirestore(ticketID) {
-    const db = firebase.firestore();
-
-    // Assuming barcodes are stored in a collection called 'tickets'
-    db.collection("tickets").doc(ticketID).delete().then(() => {
-        console.log("Ticket successfully deleted!");
-    }).catch((error) => {
+    docum).catch((error) => {
         console.error("Error removing ticket: ", error);
     });
 }
+//
+let isLocationOn = false;
+let locationWatchId = null;
 
 // Enable location tracking
 function enableLocation() {
@@ -118,17 +111,23 @@ function enableLocation() {
 
             document.getElementById('location-status').textContent = `Location enabled: Lat ${latitude}, Lng ${longitude}`;
 
-            // Send location to server (mock example)
+            // Optionally, send location to server
             fetch('/update-location', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ lat: latitude, lng: longitude })
+            }).then(response => response.json())
+            .then(data => {
+                console.log('Location updated on the server:', data);
+            })
+            .catch(error => {
+                console.error('Error sending location to server:', error);
             });
 
-        }, () => {
-            alert('Unable to access location.');
+        }, error => {
+            alert('Unable to access location. Error: ' + error.message);
         });
         isLocationOn = true;
     } else {
@@ -144,43 +143,7 @@ function disableLocation() {
         isLocationOn = false;
     }
 }
-///
-// Enable location tracking
-function enableLocation() {
-    if (navigator.geolocation) {
-        locationWatchId = navigator.geolocation.watchPosition(position => {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
 
-            document.getElementById('location-status').textContent = `Location enabled: Lat ${latitude}, Lng ${longitude}`;
-
-            // Send location to server (mock example)
-            fetch('/update-location', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ lat: latitude, lng: longitude })
-            });
-
-        }, () => {
-            alert('Unable to access location.');
-        });
-        isLocationOn = true;
-    } else {
-        alert('Geolocation is not supported by this browser.');
-    }
-}
-
-// Disable location tracking
-function disableLocation() {
-    if (isLocationOn && locationWatchId !== null) {
-        navigator.geolocation.clearWatch(locationWatchId);
-        document.getElementById('location-status').textContent = 'Location disabled';
-        isLocationOn = false;
-    }
-}
-///
 // Button Event Listeners for enabling/disabling location
 document.getElementById('location-on-btn').addEventListener('click', () => {
     enableLocation();
@@ -193,6 +156,17 @@ document.getElementById('location-off-btn').addEventListener('click', () => {
     document.getElementById('location-off-btn').style.display = 'none';
     document.getElementById('location-on-btn').style.display = 'inline-block';
 });
+
+//                                                            
+
+// Firestore delete function after validating the ticket
+function deleteBarcodeFromFirestore(ticketID) {
+    const db = firebase.firestore();
+
+    // Assuming barcodes are stored in a collection called 'tickets'
+    db.collection("tickets").doc(ticketID).delete().then(() => {
+        console.log("Ticket successfully deleted!");
+    }
 
 // Check for manifest file presence
 if (document.querySelector('link[rel="manifest"]')) {
