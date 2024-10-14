@@ -10,60 +10,35 @@
     <link rel="stylesheet" href="drivercss.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-
     <style>
         body {
             font-family: serif;
         }
-
-        /* Resize and center the scanner container */
-        #scanner-container {
-            width: 50%; /* Adjust this width */
-            height: 300px; /* Set a reasonable height */
-            border: 1px solid #ccc; /* Optional: Add a border for visibility */
-            position: relative; /* Ensure buttons stay inside */
-        }
-
-        /* Button styling */
-        #disable-camera-btn, #camera-btn, #stop-camera-btn {
-            background-color: #ff6347;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        #disable-camera-btn:hover, #camera-btn:hover, #stop-camera-btn:hover {
-            background-color: #e5533d; /* Darken button on hover */
-        }
     </style>
+
 </head>
 <body>
     <header>
         <h1>Bus Driver - Barcode Scanning & Location Tracking</h1>
     </header>
 
-  <div>
-    <h2>Barcode Scanning</h2>
-    <button id="camera-btn">Start Camera</button>
-<button id="stop-camera-btn" style="display: none;">Stop Camera</button>
-<div id="scanner-container" style="display: none;"></div>
-<p id="barcode-result"></p>
-<video style="display: none;"></video> <!-- This is optional if you want a video feed -->
-</div>
+    <div class="container">
+        <!-- Barcode Scanning Section -->
+        <h2>Barcode Scanning</h2>
+        <button id="camera-btn">Start Camera</button>
+        <button id="stop-camera-btn" style="display:none;">Stop Camera</button>
+        <div id="scanner-container"></div>
+        <div id="barcode-result">Scan a ticket to see the result.</div>
 
-<div>
-    <h2>Location Tracking</h2>
-    <button id="location-on-btn">Enable Location</button>
-    <button id="location-off-btn" style="display: none;">Disable Location</button>
-    <p id="location-status">Location not enabled yet.</p>
-</div>
-
-
+        <!-- Location Tracking Section -->
+        <h2>Location Tracking</h2>
+        <button id="location-on-btn">Enable Location</button>
+        <button id="location-off-btn" style="display:none;">Disable Location</button>
+        <p id="location-status">Location status: Not enabled</p>
+    </div>
 
     <footer>
-        <p>&copy; Demo Bus Driver App</p>
+        <p>&copy; Putco Bus Driver App</p>
     </footer>
 
     <script src="driverjs.js"></script>
