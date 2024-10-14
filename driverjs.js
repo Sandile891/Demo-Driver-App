@@ -26,12 +26,70 @@ function initializeBarcodeScanner() {
     });
 }
 
+// Initialize barcode scanner
+function initializeBarcodeScanner() {
+    Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector('#scanner-container'), // Camera feed container
+            constraints: {
+                facingMode: "environment" // Rear camera
+            }
+        },
+        decoder: {
+            readers: ["code_128_reader"] // Barcode type (CODE128)
+        }
+    }, function(err) {
+        if (err) {
+            console.error("Error initializing QuaggaJS:", err);
+            alert("Failed to start camera. Please check camera permissions.");
+            return;
+        }
+    });
+}
+
 // Start the barcode scanner
 function startBarcodeScanner() {
     if (!isCameraOn) {
         Quagga.start();
         isCameraOn = true;
         document.getElementById('scanner-container').style.display = 'block';
+
+        // Handle detected barcodes continuously
+        Quagga.onDetected(function(result) {
+            const barcode = result.codeResult.code;
+            document.getElementById('barcode-result').textContent = `Ticket ID: ${barcode}`;
+
+            // Pause Quagga to prevent multiple detections of the same code
+            Quagga.pause();
+
+            // Send barcode data to the server for validation
+            fetch('/validate-ticket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ticketID: barcode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    alert('Ticket is valid');
+                } else {
+                    alert('Ticket is invalid');
+                }
+
+                // Resume scanning for the next barcode after validation
+                Quagga.start();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+                // Ensure scanning resumes even if an error occurs
+                Quagga.start();
+            });
+        });
     }
 }
 
@@ -39,17 +97,8 @@ function startBarcodeScanner() {
 function stopBarcodeScanner() {
     if (isCameraOn) {
         Quagga.stop();
-        isCameraOn = false;
         document.getElementById('scanner-container').style.display = 'none';
-    }
-}
-
-// Toggle the camera on and off
-function toggleCamera() {
-    if (isCameraOn) {
-        stopBarcodeScanner(); // Disable camera
-    } else {
-        startBarcodeScanner(); // Enable camera
+        isCameraOn = false;
     }
 }
 
@@ -57,43 +106,50 @@ function toggleCamera() {
 initializeBarcodeScanner();
 
 // Example of how to use the toggle function with a button
-document.getElementById('toggle-camera-btn').addEventListener('click', toggleCamera);
+document.getElementById('toggle-camera-btn').addEventListener('click', function() {
+    if (isCameraOn) {
+        stopBarcodeScanner();
+    } else {
+        startBarcodeScanner();
+    }
+});
 
-
-    // Handle detected barcode
-    Quagga.onDetected(function(result) {
-        const barcode = result.codeResult.code;
-        document.getElementById('barcode-result').textContent = `Ticket ID: ${barcode}`;
-
-        // Send barcode data to server (mock example)
-        fetch('/validate-ticket', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ticketID: barcode })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.valid) {
-                alert('Ticket is valid');
-            } else {
-                alert('Ticket is invalid');
-            }
-        })
-        .catch(error => console.error('Error:', error));
+// Firestore delete function after validating the ticket
+function deleteBarcodeFromFirestore(ticketID) {
+    const db = firebase.firestore();
+    
+    // Assuming barcodes are stored in a collection called 'tickets'
+    db.collection("tickets").doc(ticketID).delete().then(() => {
+        console.log("Ticket successfully deleted!");
+    }).catch((error) => {
+        console.error("Error removing ticket: ", error);
     });
 }
 
-// Stop the barcode scanner
-function stopBarcodeScanner() {
-    if (isCameraOn) {
-        Quagga.stop();
-        document.getElementById('scanner-container').style.display = 'none';
-        isCameraOn = false;
+// Example of validating and deleting a ticket
+fetch('/validate-ticket', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ticketID: barcode })
+})
+.then(response => response.json())
+.then(data => {
+    if (data.valid) {
+        alert('Ticket is valid');
+        
+        // Delete ticket from Firestore
+        deleteBarcodeFromFirestore(barcode);
+    } else {
+        alert('Ticket is invalid');
     }
-}
+})
+.catch(error => console.error('Error:', error));
 
+
+
+  
 // Enable location tracking
 function enableLocation() {
     if (navigator.geolocation) {
