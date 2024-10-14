@@ -28,6 +28,10 @@
         <button id="camera-btn">Start Camera</button>
         <button id="stop-camera-btn" style="display:none;">Stop Camera</button>
         <div id="scanner-container"></div>
+        <div id="scanner-container" style="position: relative;">
+    <button id="disable-camera-btn" onclick="stopBarcodeScanner()">Disable Camera</button>
+</div>
+
         <div id="barcode-result">Scan a ticket to see the result.</div>
 
         <!-- Location Tracking Section -->
@@ -35,10 +39,11 @@
         <button id="location-on-btn">Enable Location</button>
         <button id="location-off-btn" style="display:none;">Disable Location</button>
         <p id="location-status">Location status: Not enabled</p>
+        <div id="scanner-container" style="position: relative;">
     </div>
 
     <footer>
-        <p>&copy; Putco Bus Driver App</p>
+        <p>&copy; Demo Bus Driver App</p>
     </footer>
 
     <script src="driverjs.js"></script>
