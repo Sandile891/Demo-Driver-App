@@ -1,10 +1,14 @@
-// Variables for toggling the camera and location
+// Variables for toggling the camera, location, and WiFi tracking
 let isCameraOn = false;
 let isLocationOn = false;
+let isWiFiOn = false;
 let locationWatchId = null;
+let scannedBarcodes = new Set(); // Store unique barcodes
 
 // Start the barcode scanner using QuaggaJS
 function startBarcodeScanner() {
+    if (isCameraOn) return; // Prevent multiple camera instances
+
     Quagga.init({
         inputStream: {
             name: "Live",
@@ -28,13 +32,22 @@ function startBarcodeScanner() {
         document.getElementById('scanner-container').style.display = 'block';
     });
 
-    // Handle detected barcode
+    // Handle detected barcodes
     Quagga.onDetected(function(result) {
         const barcode = result.codeResult.code;
-        document.getElementById('barcode-result').textContent = `Ticket ID: ${barcode}`;
 
-        // Send barcode data to Firestore for validation and deletion
-        validateAndDeleteBarcode(barcode);
+        if (!scannedBarcodes.has(barcode)) { // Only process new barcodes
+            scannedBarcodes.add(barcode);
+            document.getElementById('barcode-result').textContent = `Scanned Ticket IDs: ${Array.from(scannedBarcodes).join(', ')}`;
+
+            // Send barcode data to Firestore for validation and deletion
+            validateAndDeleteBarcode(barcode);
+
+            // Stop the scanner after 20 barcodes
+            if (scannedBarcodes.size === 20) {
+                stopBarcodeScanner();
+            }
+        }
     });
 }
 
@@ -44,6 +57,7 @@ function stopBarcodeScanner() {
         Quagga.stop();
         document.getElementById('scanner-container').style.display = 'none';
         isCameraOn = false;
+        scannedBarcodes.clear(); // Reset after stopping the camera
     }
 }
 
@@ -81,6 +95,34 @@ function disableLocation() {
         document.getElementById('location-status').textContent = 'Location disabled';
         isLocationOn = false;
     }
+}
+
+// Enable WiFi tracking
+function enableWiFiTracking() {
+    if (!navigator.onLine) {
+        alert('WiFi not available. Please connect to a WiFi network.');
+        return;
+    }
+
+    // Mock example for WiFi tracking
+    const wifiSSID = 'Mock WiFi SSID'; // Replace with actual WiFi tracking logic
+    document.getElementById('wifi-status').textContent = `Connected to WiFi: ${wifiSSID}`;
+    isWiFiOn = true;
+
+    // Send WiFi info to server
+    fetch('/update-wifi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ssid: wifiSSID })
+    });
+}
+
+// Disable WiFi tracking
+function disableWiFiTracking() {
+    document.getElementById('wifi-status').textContent = 'WiFi tracking disabled';
+    isWiFiOn = false;
 }
 
 // Function to validate and delete barcode from Firestore
@@ -131,6 +173,18 @@ document.getElementById('location-off-btn').addEventListener('click', () => {
     document.getElementById('location-on-btn').style.display = 'inline-block';
 });
 
+document.getElementById('wifi-on-btn').addEventListener('click', () => {
+    enableWiFiTracking();
+    document.getElementById('wifi-on-btn').style.display = 'none';
+    document.getElementById('wifi-off-btn').style.display = 'inline-block';
+});
+
+document.getElementById('wifi-off-btn').addEventListener('click', () => {
+    disableWiFiTracking();
+    document.getElementById('wifi-off-btn').style.display = 'none';
+    document.getElementById('wifi-on-btn').style.display = 'inline-block';
+});
+
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -143,91 +197,5 @@ if ('serviceWorker' in navigator) {
             });
     });
 }
-////
 
-           navigator.mediaDevices.getUserMedia({ video: true })
-  .then(function(stream) {
-    // Success - camera started
-    const videoElement = document.querySelector('video');
-    videoElement.srcObject = stream;
-  })
-  .catch(function(error) {
-    console.log('Error accessing the camera: ', error);
-    // Handle different error cases
-    if (error.name === 'NotReadableError') {
-      alert('Camera is already in use by another application.');
-    } else if (error.name === 'NotAllowedError') {
-      alert('Camera access is not allowed. Please enable camera permissions.');
-    } else {
-      alert('Error accessing the camera: ' + error.message);
-    }
-  });
-
-  const canvas = document.createElement('canvas');
-const context = canvas.getContext('2d', { willReadFrequently: true });
-
-/////
-
-// JavaScript for interactive features
-document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.btn');
-
-    buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('This feature is coming soon!');
-        });
-    });
-});
-
-self.addEventListener('install', function(event) {
-    event.waitUntil(
-      caches.open('v1').then(function(cache) {
-        return cache.addAll([
-          '/',
-          'index.html',
-          'manifest.json',
-          'drivercss.css',
-          'driverjs.js',
-          'logo.png',
-        ]);
-      })
-    );
-  });
-  
-  self.addEventListener('fetch', function(event) {
-    event.respondWith(
-      caches.match(event.request).then(function(response) {
-        return response || fetch(event.request);
-      })
-    );
-  });
-
-  /////
-  let deferredPrompt;
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing on mobile
-    e.preventDefault();
-    // Store the event for later use
-    deferredPrompt = e;
-    
-    // Display your custom install button or message here
-    const installButton = document.getElementById('install-button');
-    installButton.style.display = 'block';
-  
-    installButton.addEventListener('click', () => {
-      // Show the install prompt
-      deferredPrompt.prompt();
-      // Wait for user response
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-        } else {
-          console.log('User dismissed the install prompt');
-        }
-        deferredPrompt = null; // Reset
-      });
-    });
-  });
   
