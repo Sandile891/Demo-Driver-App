@@ -144,7 +144,43 @@ function disableLocation() {
         isLocationOn = false;
     }
 }
+///
+// Enable location tracking
+function enableLocation() {
+    if (navigator.geolocation) {
+        locationWatchId = navigator.geolocation.watchPosition(position => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
 
+            document.getElementById('location-status').textContent = `Location enabled: Lat ${latitude}, Lng ${longitude}`;
+
+            // Send location to server (mock example)
+            fetch('/update-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ lat: latitude, lng: longitude })
+            });
+
+        }, () => {
+            alert('Unable to access location.');
+        });
+        isLocationOn = true;
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}
+
+// Disable location tracking
+function disableLocation() {
+    if (isLocationOn && locationWatchId !== null) {
+        navigator.geolocation.clearWatch(locationWatchId);
+        document.getElementById('location-status').textContent = 'Location disabled';
+        isLocationOn = false;
+    }
+}
+///
 // Button Event Listeners for enabling/disabling location
 document.getElementById('location-on-btn').addEventListener('click', () => {
     enableLocation();
