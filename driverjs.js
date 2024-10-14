@@ -26,29 +26,6 @@ function initializeBarcodeScanner() {
     });
 }
 
-// Initialize barcode scanner
-function initializeBarcodeScanner() {
-    Quagga.init({
-        inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: document.querySelector('#scanner-container'), // Camera feed container
-            constraints: {
-                facingMode: "environment" // Rear camera
-            }
-        },
-        decoder: {
-            readers: ["code_128_reader"] // Barcode type (CODE128)
-        }
-    }, function(err) {
-        if (err) {
-            console.error("Error initializing QuaggaJS:", err);
-            alert("Failed to start camera. Please check camera permissions.");
-            return;
-        }
-    });
-}
-
 // Start the barcode scanner
 function startBarcodeScanner() {
     if (!isCameraOn) {
