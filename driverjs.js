@@ -2,9 +2,8 @@
 let isCameraOn = false;
 let isLocationOn = false;
 let locationWatchId = null;
-let mediaStream = null; // To track the media stream for stopping it
 
-// Initialize the barcode scanner without starting the camera
+// Initialize the barcode scanner
 function initializeBarcodeScanner() {
     Quagga.init({
         inputStream: {
@@ -21,26 +20,28 @@ function initializeBarcodeScanner() {
     }, function(err) {
         if (err) {
             console.error("Error initializing QuaggaJS:", err);
-            alert("Failed to initialize scanner.");
+            alert("Failed to start camera. Please check camera permissions.");
             return;
         }
     });
 }
 
-// Start the barcode scanner when user clicks the button
+// Start the barcode scanner
 function startBarcodeScanner() {
     if (!isCameraOn) {
         Quagga.start();
         isCameraOn = true;
         document.getElementById('scanner-container').style.display = 'block';
 
-        // Handle detected barcodes
+        // Handle detected barcodes continuously
         Quagga.onDetected(function(result) {
             const barcode = result.codeResult.code;
             document.getElementById('barcode-result').textContent = `Ticket ID: ${barcode}`;
-            Quagga.pause(); // Pause to prevent multiple detections
 
-            // Send barcode data to server for validation
+            // Pause Quagga to prevent multiple detections of the same code
+            Quagga.pause();
+
+            // Send barcode data to the server for validation
             fetch('/validate-ticket', {
                 method: 'POST',
                 headers: {
@@ -50,33 +51,40 @@ function startBarcodeScanner() {
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.valid ? 'Ticket is valid' : 'Ticket is invalid');
-                Quagga.start(); // Resume scanning
+                if (data.valid) {
+                    alert('Ticket is valid');
+                    // Delete ticket from Firestore
+                    deleteBarcodeFromFirestore(barcode);
+                } else {
+                    alert('Ticket is invalid');
+                }
+
+                // Resume scanning for the next barcode after validation
+                Quagga.start();
             })
             .catch(error => {
                 console.error('Error:', error);
-                Quagga.start(); // Resume scanning even on error
+
+                // Ensure scanning resumes even if an error occurs
+                Quagga.start();
             });
         });
     }
 }
 
-// Stop the barcode scanner and turn off the camera
+// Stop the barcode scanner
 function stopBarcodeScanner() {
     if (isCameraOn) {
         Quagga.stop();
         document.getElementById('scanner-container').style.display = 'none';
         isCameraOn = false;
-
-        // Stop the camera stream
-        if (mediaStream) {
-            mediaStream.getTracks().forEach(track => track.stop());
-            mediaStream = null;
-        }
     }
 }
 
-// Button event listeners for camera control
+// Call this function once to initialize QuaggaJS
+initializeBarcodeScanner();
+
+// Button Event Listeners for starting/stopping the camera
 document.getElementById('camera-btn').addEventListener('click', () => {
     startBarcodeScanner();
     document.getElementById('camera-btn').style.display = 'none';
@@ -89,22 +97,72 @@ document.getElementById('stop-camera-btn').addEventListener('click', () => {
     document.getElementById('camera-btn').style.display = 'inline-block';
 });
 
-// Remove auto-start of the camera
-// Initialize QuaggaJS without starting the camera
-initializeBarcodeScanner();
+// Firestore delete function after validating the ticket
+function deleteBarcodeFromFirestore(ticketID) {
+    const db = firebase.firestore();
 
-// Optional: Handle manual camera permissions with a video element
-function requestCameraPermissions() {
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function(stream) {
-            mediaStream = stream; // Save the media stream
-            const videoElement = document.querySelector('video');
-            videoElement.srcObject = stream;
-        })
-        .catch(function(error) {
-            console.error('Error accessing the camera: ', error);
-            alert('Error accessing the camera: ' + error.message);
+    // Assuming barcodes are stored in a collection called 'tickets'
+    db.collection("tickets").doc(ticketID).delete().then(() => {
+        console.log("Ticket successfully deleted!");
+    }).catch((error) => {
+        console.error("Error removing ticket: ", error);
+    });
+}
+
+// Enable location tracking
+function enableLocation() {
+    if (navigator.geolocation) {
+        locationWatchId = navigator.geolocation.watchPosition(position => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            document.getElementById('location-status').textContent = `Location enabled: Lat ${latitude}, Lng ${longitude}`;
+
+            // Send location to server (mock example)
+            fetch('/update-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ lat: latitude, lng: longitude })
+            });
+
+        }, () => {
+            alert('Unable to access location.');
         });
+        isLocationOn = true;
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}
+
+// Disable location tracking
+function disableLocation() {
+    if (isLocationOn && locationWatchId !== null) {
+        navigator.geolocation.clearWatch(locationWatchId);
+        document.getElementById('location-status').textContent = 'Location disabled';
+        isLocationOn = false;
+    }
+}
+
+// Button Event Listeners for enabling/disabling location
+document.getElementById('location-on-btn').addEventListener('click', () => {
+    enableLocation();
+    document.getElementById('location-on-btn').style.display = 'none';
+    document.getElementById('location-off-btn').style.display = 'inline-block';
+});
+
+document.getElementById('location-off-btn').addEventListener('click', () => {
+    disableLocation();
+    document.getElementById('location-off-btn').style.display = 'none';
+    document.getElementById('location-on-btn').style.display = 'inline-block';
+});
+
+// Check for manifest file presence
+if (document.querySelector('link[rel="manifest"]')) {
+    console.log("Manifest link found.");
+} else {
+    console.log("Manifest link NOT found.");
 }
 
 
