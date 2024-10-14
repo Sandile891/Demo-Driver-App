@@ -3,8 +3,8 @@ let isCameraOn = false;
 let isLocationOn = false;
 let locationWatchId = null;
 
-// Start the barcode scanner using QuaggaJS
-function startBarcodeScanner() {
+// Initialize the barcode scanner
+function initializeBarcodeScanner() {
     Quagga.init({
         inputStream: {
             name: "Live",
@@ -23,10 +23,42 @@ function startBarcodeScanner() {
             alert("Failed to start camera. Please check camera permissions.");
             return;
         }
+    });
+}
+
+// Start the barcode scanner
+function startBarcodeScanner() {
+    if (!isCameraOn) {
         Quagga.start();
         isCameraOn = true;
         document.getElementById('scanner-container').style.display = 'block';
-    });
+    }
+}
+
+// Stop the barcode scanner
+function stopBarcodeScanner() {
+    if (isCameraOn) {
+        Quagga.stop();
+        isCameraOn = false;
+        document.getElementById('scanner-container').style.display = 'none';
+    }
+}
+
+// Toggle the camera on and off
+function toggleCamera() {
+    if (isCameraOn) {
+        stopBarcodeScanner(); // Disable camera
+    } else {
+        startBarcodeScanner(); // Enable camera
+    }
+}
+
+// Call this function once to initialize QuaggaJS
+initializeBarcodeScanner();
+
+// Example of how to use the toggle function with a button
+document.getElementById('toggle-camera-btn').addEventListener('click', toggleCamera);
+
 
     // Handle detected barcode
     Quagga.onDetected(function(result) {
