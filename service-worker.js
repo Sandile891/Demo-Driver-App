@@ -70,7 +70,7 @@ self.addEventListener('push', function(event) {
   let data = event.data ? event.data.json() : {};
   const options = {
     body: data.body || 'You have a new message!',
-    icon: 'icon.png',
+    icon: 'logoA.png',
     badge: 'badge.png'
   };
 
