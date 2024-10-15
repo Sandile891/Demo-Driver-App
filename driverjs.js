@@ -208,5 +208,24 @@ if ('serviceWorker' in navigator) {
   });
 }
 /////////////
+self.addEventListener('sync', function(event) {
+  if (event.tag === 'sync-driver-data') {
+    event.waitUntil(syncDriverData());
+  }
+});
+
+function syncDriverData() {
+  // Logic to sync data when connectivity is restored
+  return fetch('/sync-driver-location', {
+    method: 'POST',
+    body: JSON.stringify({ /* Your data here */ }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(response => response.json());
+}
+navigator.serviceWorker.ready.then(function(registration) {
+  return registration.sync.register('sync-driver-data');
+});
 
 
