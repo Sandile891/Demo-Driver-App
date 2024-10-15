@@ -209,38 +209,4 @@ if ('serviceWorker' in navigator) {
 }
 
 -----------
-    navigator.serviceWorker.ready.then(function(swRegistration) {
-  return swRegistration.sync.register('sync-data');
-});
-navigator.serviceWorker.ready.then((registration) => {
-  if ('periodicSync' in registration) {
-    registration.periodicSync.register({
-      tag: 'periodic-sync-tag',  // Unique tag to identify this sync
-      minInterval: 24 * 60 * 60 * 1000  // Minimum sync interval (1 day)
-    });
-  }
-});
-navigator.serviceWorker.ready.then(function(registration) {
-  registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array('<Your-VAPID-Public-Key>')
-  }).then(function(subscription) {
-    console.log('Push Subscription:', JSON.stringify(subscription));
-    // Send subscription to the server to send push notifications
-  }).catch(function(error) {
-    console.error('Error subscribing to push notifications:', error);
-  });
-});
-
-// Helper function to convert VAPID public key
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
-
+   
