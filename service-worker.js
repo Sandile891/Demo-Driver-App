@@ -49,70 +49,40 @@ self.addEventListener('activate', function(event) {
 });
 ////////////////////////////
 self.addEventListener('sync', function(event) {
-  if (event.tag === 'sync-driver-data') {
-    event.waitUntil(syncDriverData());
+  if (event.tag === 'sync-data') {
+    event.waitUntil(syncData());
   }
 });
 
-function syncDriverData() {
-  // Logic to sync data when connectivity is restored
-  return fetch('/sync-driver-location', {
-    method: 'POST',
-    body: JSON.stringify({ /* Your data here */ }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then(response => response.json());
+function syncData() {
+  // Code for syncing data when back online
 }
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'sync-driver-location-periodic') {
-    event.waitUntil(syncDriverLocationPeriodically());
+
+self.addEventListener('periodicsync', function(event) {
+  if (event.tag === 'periodic-sync-tag') {
+    event.waitUntil(fetchLatestData());
   }
 });
 
-function syncDriverLocationPeriodically() {
-  // Periodic location sync logic
-  return fetch('/sync-location-periodic', {
-    method: 'POST',
-    body: JSON.stringify({ /* Your periodic location data here */ }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then(response => response.json());
+function fetchLatestData() {
+  // Code to fetch new data periodically
 }
 self.addEventListener('push', function(event) {
-  const data = event.data ? event.data.json() : {};
+  let data = event.data ? event.data.json() : {};
   const options = {
-    body: data.body,
-    icon: '/logo.png', // Add your icon path
-    badge: '/icons/notification-badge.png' // Add your badge path
+    body: data.body || 'You have a new message!',
+    icon: 'logo.png',
+    badge: 'badge.png'
   };
-  event.waitUntil(self.registration.showNotification(data.title, options));
-});
-const CACHE_NAME = 'driver-app-cache';
-const URLS_TO_CACHE = [
-  '/',
-  'index.html',
-  'drivercss.css',
-  'driverjs.js',
-  'logo.png',
-  // Add more assets to cache here
-];
 
-self.addEventListener('install', function(event) {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(URLS_TO_CACHE);
-    })
+    self.registration.showNotification(data.title || 'Push Notification', options)
   );
 });
 
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
-    })
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow('https://sandile891.github.io/DemoBusApp/')
   );
 });
-
-
