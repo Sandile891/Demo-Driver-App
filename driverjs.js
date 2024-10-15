@@ -208,24 +208,27 @@ if ('serviceWorker' in navigator) {
   });
 }
 /////////////
-self.addEventListener('sync', function(event) {
-  if (event.tag === 'sync-driver-data') {
-    event.waitUntil(syncDriverData());
-  }
-});
-
-function syncDriverData() {
-  // Logic to sync data when connectivity is restored
-  return fetch('/sync-driver-location', {
-    method: 'POST',
-    body: JSON.stringify({ /* Your data here */ }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then(response => response.json());
-}
 navigator.serviceWorker.ready.then(function(registration) {
   return registration.sync.register('sync-driver-data');
+});
+navigator.serviceWorker.ready.then((registration) => {
+  if ('periodicSync' in registration) {
+    registration.periodicSync.register({
+      tag: 'sync-driver-location-periodic',
+      minInterval: 12 * 60 * 60 * 1000  // 12 hours
+    });
+  }
+});
+navigator.serviceWorker.ready.then(function(registration) {
+  // Ask user permission for notifications
+  Notification.requestPermission(function(status) {
+    if (status === 'granted') {
+      registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: '<Your VAPID Public Key>'
+      });
+    }
+  });
 });
 
 
