@@ -48,40 +48,4 @@ self.addEventListener('activate', function(event) {
   );
 });
 ////////////////////////////
-self.addEventListener('sync', function(event) {
-  if (event.tag === 'sync-data') {
-    event.waitUntil(syncData());
-  }
-});
 
-function syncData() {
-  // Code for syncing data when back online
-}
-self.addEventListener('periodicsync', function(event) {
-  if (event.tag === 'periodic-sync-tag') {
-    event.waitUntil(fetchLatestData());
-  }
-});
-
-function fetchLatestData() {
-  // Code to fetch new data periodically
-}
-self.addEventListener('push', function(event) {
-  let data = event.data ? event.data.json() : {};
-  const options = {
-    body: data.body || 'You have a new message!',
-    icon: 'logoA.png',
-    badge: 'badge.png'
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'Push Notification', options)
-  );
-});
-
-self.addEventListener('notificationclick', function(event) {
-  event.notification.close();
-  event.waitUntil(
-    clients.openWindow('https://your-app-url.com')
-  );
-});
