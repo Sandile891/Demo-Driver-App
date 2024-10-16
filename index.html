@@ -16,163 +16,222 @@
             padding: 0;
         }
         header {
-            background-color: #00008B; /* Dark blue */
+            background-color: darkblue;
             color: white;
             text-align: center;
-            padding: 1em;
+            padding: 1rem;
+            font-size: 1.5rem;
         }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        .container {
+            text-align: center;
+            padding: 1rem;
+        }
+        .button {
+            margin: 10px;
+            padding: 10px;
+            background-color: #008000;
         button {
-            display: block;
-            width: 100%;
-            background-color: #FF8C00; /* Dark orange */
+            background-color: darkorange;
             color: white;
+            padding: 1rem;
             border: none;
-            padding: 15px;
-            margin: 10px 0;
-            font-size: 16px;
             cursor: pointer;
-        }
-        button:hover {
-            background-color: #FF7F50; /* Lighter orange on hover */
+            margin: 0.5rem;
+            width: 90%;
+            font-size: 1rem;
+            border-radius: 5px;
         }
         #camera-container {
             width: 100%;
-            height: auto;
-            text-align: center;
+            height: 480px;
+            background-color: black;
+            margin: 1rem auto;
         }
-        #result {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 18px;
+        .valid-barcode {
+            color: green;
         }
+        .invalid-barcode {
+            color: red;
+        }
+        .button:hover {
+            background-color: #005000;
         footer {
-            background-color: #333; /* Dark grey */
+            background-color: darkblue;
             color: white;
             text-align: center;
-            padding: 1em;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
+    <h1>Bus Driver App - Barcode & Location</h1>
 
-<header>
-    <h1>Putco Bus Driver App</h1>
-</header>
+    <!-- Buttons for enabling location, starting/stopping the camera -->
+    <button class="button" id="enable-location">Enable Location</button>
+    <button class="button" id="start-camera">Start Camera & Scan Barcodes</button>
+    <button class="button" id="stop-camera">Stop Camera</button>
+    <header>
+        Putco Bus Driver App
+    </header>
 
-<div id="camera-container">
-    <!-- Camera view will appear here -->
-</div>
+    <!-- Camera container for live stream -->
+    <div id="camera-container" style="width: 640px; height: 480px; margin: auto;"></div>
+    <div class="container">
+        <button id="enable-location">Enable Location</button>
+        <button id="start-camera">Start Camera</button>
+        <button id="stop-camera">Stop Camera</button>
 
-<div id="result">No barcode detected yet.</div>
+    <!-- Result display -->
+    <div id="result"></div>
+        <div id="camera-container"></div>
+        <div id="result"></div>
+    </div>
 
-<button id="enable-location">Enable Location</button>
-<button id="start-camera">Start Camera</button>
-<button id="stop-camera">Stop Camera</button>
+    <footer>
+        <p>&copy; Putco Bus Driver App</p>
+    </footer>
 
-<footer>
-    <p>&copy; Putco Bus Driver App</p>
-</footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.1/firebase-app.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.1/firebase-firestore.min.js"></script>
+    <script src="driverjs.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.1.2/firebase-app.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.1.2/firebase-firestore.js"></script>
-<script src="driverjs.js"></script>
-
-<script>
-    // Firebase initialization
-    const firebaseConfig = {
-        apiKey: "your-api-key",
-        authDomain: "your-app-id.firebaseapp.com",
-        projectId: "your-project-id",
-        storageBucket: "your-app-id.appspot.com",
-        messagingSenderId: "your-messaging-sender-id",
-        appId: "your-app-id"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // Enable location button
-    document.getElementById('enable-location').addEventListener('click', function() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                console.log("Location:", latitude, longitude);
-
-                // Send location to Firestore
-                db.collection("bus-locations").add({
-                    latitude: latitude,
-                    longitude: longitude,
-                    timestamp: new Date()
-                }).then(() => {
-                    alert('Location sent to Firestore');
-                }).catch(error => {
-                    console.error("Error sending location: ", error);
+    <script>
+        // Function to enable location and send it to Firestore
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            measurementId: "YOUR_MEASUREMENT_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        // Handle location enabling
+        document.getElementById('enable-location').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const long = position.coords.longitude;
+                    console.log("Location: ", lat, long);
+                    // Here you'd send the location to your Firestore server
+                    // Example Firestore code (ensure you've set up Firestore SDK):
+                    // firebase.firestore().collection('bus-locations').add({
+                    //     latitude: lat,
+                    //     longitude: long,
+                    //     timestamp: new Date()
+                    // });
+                    document.getElementById('result').innerHTML = `<span class="valid-barcode">Location sent: ${lat}, ${long}</span>`;
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    // Send location to Firestore
+                    db.collection("bus-locations").add({
+                        latitude: latitude,
+                        longitude: longitude,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        console.log("Location sent to Firestore:", latitude, longitude);
+                    }).catch((error) => {
+                        console.error("Error sending location to Firestore: ", error);
+                    });
                 });
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    });
+            } else {
+                document.getElementById('result').innerHTML = `<span class="invalid-barcode">Geolocation is not supported by this browser.</span>`;
+                console.log("Geolocation is not supported by this browser.");
+            }
+        });
 
-    // Start camera button
-    document.getElementById('start-camera').addEventListener('click', function() {
-        Quagga.init({
-            inputStream: {
-                name: "Live",
-                type: "LiveStream",
-                target: document.querySelector('#camera-container'), // The target for the camera
-                constraints: {
-                    width: 640,
-                    height: 480,
-                    facingMode: "environment" // Use rear camera
+        // Function to initialize Quagga for barcode scanning
+        function initQuagga() {
+        // Start the camera for barcode scanning
+        document.getElementById('start-camera').addEventListener('click', function() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#camera-container'), // The target for the camera
+                    target: document.querySelector('#camera-container'),
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment" // Use rear camera
+                        facingMode: "environment"
+                    },
                 },
-            },
-            decoder: {
-                readers: ["ean_reader"] // Add your barcode type here (e.g. ean_reader for barcodes)
-            }
-        }, function(err) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            console.log("Barcode scanning initialized.");
-            Quagga.start();
-        });
-
-        // Process the result when a barcode is detected
-        Quagga.onDetected(function(data) {
-            const barcode = data.codeResult.code;
-            console.log("Barcode detected: ", barcode);
-            document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid: ${barcode}</span>`;
-
-            // Check barcode validity from Firestore
-            db.collection("barcodes").doc(barcode).get().then((doc) => {
-                if (doc.exists) {
-                    document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid: ${barcode}</span>`;
-                    // Optionally delete the barcode from Firestore
-                    db.collection("barcodes").doc(barcode).delete();
-                    // Stop scanning after one valid barcode is detected
-                    Quagga.stop();
-                } else {
-                    document.getElementById('result').innerHTML = `<span class="invalid-barcode">Invalid: ${barcode}</span>`;
-                    // Stop scanning after an invalid barcode is detected
-                    Quagga.stop();
+                decoder: {
+                    readers: ["ean_reader"] // Add your barcode type here (e.g. ean_reader for the barcode in the image)
+                    readers: ["ean_reader"]
                 }
-            }).catch((error) => {
-                console.error("Error checking barcode: ", error);
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log("Barcode scanning initialized.");
+                Quagga.start();
+            });
+        }
+        // Process barcode detection and scan multiple barcodes
+        function scanMultipleBarcodes() {
+            let scanCount = 0;
+
+            // Process the barcode detected
+            Quagga.onDetected(function(data) {
+                const barcode = data.codeResult.code;
+                scanCount++;
+                console.log(`Barcode detected: ${barcode} (Scan count: ${scanCount})`);
+                document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid: ${barcode} (Scan count: ${scanCount})</span>`;
+                if (scanCount >= 3) { // Stop after scanning 3 barcodes
+                    setTimeout(() => {
+                        Quagga.stop();
+                        document.getElementById('result').innerHTML += `<br><span class="valid-barcode">Camera stopped after 3 scans.</span>`;
+                    }, 2000);
+                }
+            });
+        }
+                console.log("Barcode detected: ", barcode);
+                document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid: ${barcode}</span>`;
+
+        // Start camera and scan barcodes when 'Start Camera' is clicked
+        document.getElementById('start-camera').addEventListener('click', function() {
+            initQuagga();
+            scanMultipleBarcodes(); // Start scanning barcodes
+                // Check barcode against Firestore
+                db.collection("barcodes").doc(barcode).get().then((doc) => {
+                    if (doc.exists) {
+                        console.log("Barcode exists in Firestore");
+                        // Mark barcode as valid
+                        document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid Barcode: ${barcode}</span>`;
+                        // Optionally, delete the barcode after validation
+                        db.collection("barcodes").doc(barcode).delete();
+                    } else {
+                        document.getElementById('result').innerHTML = `<span class="invalid-barcode">Invalid Barcode</span>`;
+                    }
+                }).catch((error) => {
+                    console.error("Error checking barcode: ", error);
+                });
+                Quagga.stop(); // Stop the camera after scanning
             });
         });
-    });
 
-    // Stop camera button
-    document.getElementById('stop-camera').addEventListener('click', function() {
-        Quagga.stop();
-        document.getElementById('result').innerHTML = `<span class="invalid-barcode">Camera stopped.</span>`;
-    });
-</script>
-
+        // Stop camera when 'Stop Camera' is clicked
+        // Stop the camera when button clicked
+        document.getElementById('stop-camera').addEventListener('click', function() {
+            Quagga.stop();
+            document.getElementById('result').innerHTML = `<span class="invalid-barcode">Camera stopped.</span>`;
+        });
+    </script>
 </body>
 </html>
+
 
 
 
