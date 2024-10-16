@@ -8,114 +8,47 @@
     <link rel="manifest" href="manifest.json">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <link rel="stylesheet" href="drivercss.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon"-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         body {
             font-family: serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #00008B; /* Dark blue */
-            color: white;
-            text-align: center;
-            padding: 1em;
-        }
-        button {
-            display: block;
-            width: 100%;
-            background-color: #FF8C00; /* Dark orange */
-            color: white;
-            border: none;
-            padding: 15px;
-            margin: 10px 0;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #FF7F50; /* Lighter orange on hover */
-        }
-        #camera-container {
-            width: 100%;
-            height: auto;
             text-align: center;
         }
         #result {
-            text-align: center;
-            margin: 20px 0;
+            margin-top: 20px;
             font-size: 18px;
         }
-        footer {
-            background-color: #333; /* Dark grey */
+        .button {
+            margin: 10px;
+            padding: 10px;
+            background-color: #008000;
             color: white;
-            text-align: center;
-            padding: 1em;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #005000;
         }
     </style>
 </head>
 <body>
+    <h1>Bus Driver App - Barcode & Location</h1>
+    <!-- Buttons for enabling location, starting/stopping the camera -->
+    <button class="button" id="enable-location">Enable Location</button>
+    <button class="button" id="start-camera">Start Camera & Scan Barcodes</button>
+    <button class="button" id="stop-camera">Stop Camera</button>
+    <!-- Camera container for live stream -->
+    <div id="camera-container" style="width: 640px; height: 480px; margin: auto;"></div>
+    <!-- Result display -->
+    <div id="result"></div>
+    <footer>
+        <p>&copy; Putco Bus Driver App</p>
+    </footer>
+    <script src="driverjs.js"></script>
 
-<header>
-    <h1>Putco Bus Driver App</h1>
-</header>
-
-<div id="camera-container">
-    <!-- Camera view will appear here -->
-</div>
-
-<div id="result">No barcode detected yet.</div>
-
-<button id="enable-location">Enable Location</button>
-<button id="start-camera">Start Camera</button>
-<button id="stop-camera">Stop Camera</button>
-
-<footer>
-    <p>&copy; Putco Bus Driver App</p>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.1.2/firebase-app.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.1.2/firebase-firestore.js"></script>
-<script src="driverjs.js"></script>
-
-<script>
-    // Firebase initialization
-    const firebaseConfig = {
-        apiKey: "your-api-key",
-        authDomain: "your-app-id.firebaseapp.com",
-        projectId: "your-project-id",
-        storageBucket: "your-app-id.appspot.com",
-        messagingSenderId: "your-messaging-sender-id",
-        appId: "your-app-id"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // Enable location button
-    document.getElementById('enable-location').addEventListener('click', function() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                console.log("Location:", latitude, longitude);
-
-                // Send location to Firestore
-                db.collection("bus-locations").add({
-                    latitude: latitude,
-                    longitude: longitude,
-                    timestamp: new Date()
-                }).then(() => {
-                    alert('Location sent to Firestore');
-                }).catch(error => {
-                    console.error("Error sending location: ", error);
-                });
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    });
-
-    // Start camera button
-    document.getElementById('start-camera').addEventListener('click', function() {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script>
         Quagga.init({
             inputStream: {
                 name: "Live",
@@ -128,12 +61,30 @@
                 },
             },
             decoder: {
-                readers: ["ean_reader"] // Add your barcode type here (e.g. ean_reader for barcodes)
+                readers: ["ean_reader"] // Add your barcode type here (e.g. ean_reader for the barcode in the image)
             }
         }, function(err) {
             if (err) {
                 console.log(err);
                 return;
+        // Function to enable location and send it to Firestore
+        document.getElementById('enable-location').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const long = position.coords.longitude;
+                    console.log("Location: ", lat, long);
+                    // Here you'd send the location to your Firestore server
+                    // Example Firestore code (ensure you've set up Firestore SDK):
+                    // firebase.firestore().collection('bus-locations').add({
+                    //     latitude: lat,
+                    //     longitude: long,
+                    //     timestamp: new Date()
+                    // });
+                    document.getElementById('result').innerHTML = `<span class="valid-barcode">Location sent: ${lat}, ${long}</span>`;
+                });
+            } else {
+                document.getElementById('result').innerHTML = `<span class="invalid-barcode">Geolocation is not supported by this browser.</span>`;
             }
             console.log("Barcode scanning initialized.");
             Quagga.start();
@@ -143,32 +94,68 @@
         Quagga.onDetected(function(data) {
             const barcode = data.codeResult.code;
             console.log("Barcode detected: ", barcode);
-            document.getElementById('result').innerHTML = <span class="valid-barcode">Valid: ${barcode}</span>;
-
-            // Check barcode validity from Firestore
-            db.collection("barcodes").doc(barcode).get().then((doc) => {
-                if (doc.exists) {
-                    document.getElementById('result').innerHTML = <span class="valid-barcode">Valid: ${barcode}</span>;
-                    // Optionally delete the barcode from Firestore
-                    db.collection("barcodes").doc(barcode).delete();
-                } else {
-                    document.getElementById('result').innerHTML = <span class="invalid-barcode">Invalid: ${barcode}</span>;
+            document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid: ${barcode}</span>`;
+            Quagga.stop(); // Stop the camera after detection
+        // Function to initialize Quagga for barcode scanning
+        function initQuagga() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#camera-container'), // The target for the camera
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment" // Use rear camera
+                    },
+                },
+                decoder: {
+                    readers: ["ean_reader"] // Add your barcode type here (e.g. ean_reader for the barcode in the image)
                 }
-            }).catch((error) => {
-                console.error("Error checking barcode: ", error);
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log("Barcode scanning initialized.");
+                Quagga.start();
             });
+        }
+        // Process barcode detection and scan multiple barcodes
+        function scanMultipleBarcodes() {
+            let scanCount = 0;
+            Quagga.onDetected(function(data) {
+                const barcode = data.codeResult.code;
+                scanCount++;
+                console.log(`Barcode detected: ${barcode} (Scan count: ${scanCount})`);
+                document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid: ${barcode} (Scan count: ${scanCount})</span>`;
+                if (scanCount >= 3) { // Stop after scanning 3 barcodes
+                    setTimeout(() => {
+                        Quagga.stop();
+                        document.getElementById('result').innerHTML += `<br><span class="valid-barcode">Camera stopped after 3 scans.</span>`;
+                    }, 2000);
+                }
+            });
+        }
+        // Start camera and scan barcodes when 'Start Camera' is clicked
+        document.getElementById('start-camera').addEventListener('click', function() {
+            initQuagga();
+            scanMultipleBarcodes(); // Start scanning barcodes
         });
-    });
 
-    // Stop camera button
-    document.getElementById('stop-camera').addEventListener('click', function() {
-        Quagga.stop();
-        document.getElementById('result').innerHTML = <span class="invalid-barcode">Camera stopped.</span>;
-    });
-</script>
-
+        // Stop camera when button is clicked
+        // Stop camera when 'Stop Camera' is clicked
+        document.getElementById('stop-camera').addEventListener('click', function() {
+            Quagga.stop();
+            document.getElementById('result').innerHTML = `<span class="invalid-barcode">Camera stopped.</span>`;
+        });
+    </script>
 </body>
+    <footer>
+        <p>&copy; Putco Bus Driver App</p>
+    </footer>
 </html>
+
 
 
 
