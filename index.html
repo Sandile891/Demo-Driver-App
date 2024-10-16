@@ -55,22 +55,8 @@
         <p>&copy; Putco Bus Driver App</p>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.1.2/firebase-app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.1.2/firebase-firestore.js"></script>
     <script>
-        // Firebase initialization
-        const firebaseConfig = {
-            apiKey: "your-api-key",
-            authDomain: "your-app-id.firebaseapp.com",
-            projectId: "your-project-id",
-            storageBucket: "your-app-id.appspot.com",
-            messagingSenderId: "your-messaging-sender-id",
-            appId: "your-app-id"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // Enable location and send to Firestore
+        // Function to handle location fetching
         document.getElementById('enable-location').addEventListener('click', function() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -78,19 +64,13 @@
                     const long = position.coords.longitude;
                     console.log("Location: ", lat, long);
 
-                    // Send location to Firestore
-                    db.collection("bus-locations").add({
-                        latitude: lat,
-                        longitude: long,
-                        timestamp: new Date()
-                    }).then(() => {
-                        document.getElementById('result').innerHTML = `Location sent: ${lat}, ${long}`;
-                    }).catch(error => {
-                        console.error("Error sending location: ", error);
-                    });
+                    // Display location in result section
+                    document.getElementById('result').innerHTML = `Location: ${lat}, ${long}`;
+                }, function(error) {
+                    document.getElementById('result').innerHTML = 'Error fetching location';
                 });
             } else {
-                document.getElementById('result').innerHTML = `Geolocation is not supported by this browser.`;
+                document.getElementById('result').innerHTML = 'Geolocation is not supported by this browser.';
             }
         });
 
@@ -120,7 +100,7 @@
             });
         }
 
-        // Start camera and scan barcodes
+        // Event listener for Start Camera button
         document.getElementById('start-camera').addEventListener('click', function() {
             document.getElementById('camera-container').style.display = 'block'; // Show camera
             initQuagga();
@@ -137,7 +117,7 @@
             });
         });
 
-        // Stop camera
+        // Event listener for Stop Camera button
         document.getElementById('stop-camera').addEventListener('click', function() {
             Quagga.stop();
             document.getElementById('result').innerHTML = `Camera stopped.`;
