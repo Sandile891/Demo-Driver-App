@@ -196,9 +196,11 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+
 let videoStream = null;  // To hold the video stream for stopping later
 let scannedBarcodes = [];  // Array to store multiple scanned barcodes
 let maxBarcodes = 20;      // Set how many barcodes you want to scan before stopping
+let currentLocation = null;  // To store the driver's current location
 
 // Function to start the camera
 function startCamera() {
@@ -222,8 +224,6 @@ function scanBarcode() {
     const video = document.querySelector('video');
     
     // Assuming you're using a library like Quagga.js or any other barcode scanning library
-    // Example: Quagga.onDetected(callback);
-    // Callback function when barcode is detected:
     Quagga.onDetected(function (result) {
         const barcode = result.codeResult.code;
 
@@ -262,5 +262,37 @@ function stopCamera() {
     }
 }
 
+// Function to get the driver's location
+function enableLocationTracking() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            currentLocation = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+            console.log('Location: ', currentLocation);
+            displayLocation();  // Show the location on the page
+        }, function (error) {
+            console.error('Error getting location: ', error);
+        });
+    } else {
+        console.log('Geolocation is not supported by this browser.');
+    }
+}
+
+// Function to display location
+function displayLocation() {
+    const locationDisplay = document.getElementById('location-status');
+    if (currentLocation) {
+        locationDisplay.textContent = 'Latitude: ' + currentLocation.latitude + ', Longitude: ' + currentLocation.longitude;
+    } else {
+        locationDisplay.textContent = 'Location not enabled or available.';
+    }
+}
+
 // Add event listener for the "Stop Camera" button
 document.getElementById('stopCameraButton').addEventListener('click', stopCamera);
+
+// Add event listener for the "Enable Location" button
+document.getElementById('enableLocationButton').addEventListener('click', enableLocationTracking);
+
