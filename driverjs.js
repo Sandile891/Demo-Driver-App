@@ -69,14 +69,6 @@ function toggleCameraButtons(isCameraOn) {
     document.getElementById('stop-camera-btn').style.display = isCameraOn ? 'inline-block' : 'none';
 }
 
-// Enable location tracking
-function enableLocation() {
-    if (navigator.geolocation) {
-        locationWatchId = navigator.geolocation.watchPosition(position => {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            document.getElementById('location-status').textContent = `Location enabled: Lat ${latitude}, Lng ${longitude}`;
 
             // Send location to server (mock example)
             fetch('/update-location', {
@@ -86,32 +78,6 @@ function enableLocation() {
                 },
                 body: JSON.stringify({ lat: latitude, lng: longitude })
             });
-
-        }, () => {
-            alert('Unable to access location.');
-        });
-        isLocationOn = true;
-        toggleLocationButtons(true);
-    } else {
-        alert('Geolocation is not supported by this browser.');
-    }
-}
-
-// Disable location tracking
-function disableLocation() {
-    if (isLocationOn && locationWatchId !== null) {
-        navigator.geolocation.clearWatch(locationWatchId);
-        document.getElementById('location-status').textContent = 'Location disabled';
-        isLocationOn = false;
-        toggleLocationButtons(false);
-    }
-}
-
-// Toggle location button visibility
-function toggleLocationButtons(isLocationOn) {
-    document.getElementById('location-on-btn').style.display = isLocationOn ? 'none' : 'inline-block';
-    document.getElementById('location-off-btn').style.display = isLocationOn ? 'inline-block' : 'none';
-}
 
 // Enable WiFi tracking
 function enableWiFiTracking() {
@@ -253,46 +219,6 @@ function displayScannedBarcodes() {
     });
 }
 
-// Function to stop the camera
-function stopCamera() {
-    if (videoStream) {
-        let tracks = videoStream.getTracks();
-        tracks.forEach(track => track.stop());  // Stop all tracks to stop the camera
-        console.log('Camera stopped');
-    }
-}
-
-// Function to get the driver's location
-function enableLocationTracking() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            currentLocation = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            };
-            console.log('Location: ', currentLocation);
-            displayLocation();  // Show the location on the page
-        }, function (error) {
-            console.error('Error getting location: ', error);
-        });
-    } else {
-        console.log('Geolocation is not supported by this browser.');
-    }
-}
-
-// Function to display location
-function displayLocation() {
-    const locationDisplay = document.getElementById('location-status');
-    if (currentLocation) {
-        locationDisplay.textContent = 'Latitude: ' + currentLocation.latitude + ', Longitude: ' + currentLocation.longitude;
-    } else {
-        locationDisplay.textContent = 'Location not enabled or available.';
-    }
-}
-
 // Add event listener for the "Stop Camera" button
 document.getElementById('stopCameraButton').addEventListener('click', stopCamera);
-
-// Add event listener for the "Enable Location" button
-document.getElementById('enableLocationButton').addEventListener('click', enableLocationTracking);
 
