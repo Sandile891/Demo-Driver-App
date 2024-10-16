@@ -43,3 +43,99 @@
 </body>
 </html-->
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Driver App - Barcode & Location</title>
+    <!-- QuaggaJS for barcode scanning -->
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <link rel="stylesheet" href="drivercss.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <style>
+        body {
+            font-family: serif;
+        }
+    </style>
+
+</head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Driver - Barcode Scanning</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .valid-barcode { color: green; font-size: 20px; margin-top: 10px; }
+        .invalid-barcode { color: red; font-size: 20px; margin-top: 10px; }
+        #camera-container { width: 100%; height: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Bus Driver - Barcode Scanning</h1>
+    <div id="camera-container"></div>
+    <button id="stop-camera">Stop Camera</button>
+    <p id="result"></p>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script>
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#camera-container'), // The target for the camera
+                constraints: {
+                    width: 640,
+                    height: 480,
+                    facingMode: "environment" // Use rear camera
+                },
+            },
+            decoder: {
+                readers: ["ean_reader"] // Add your barcode type here (e.g. ean_reader for the barcode in the image)
+            }
+        }, function(err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log("Barcode scanning initialized.");
+            Quagga.start();
+        });
+
+        // Process the result when a barcode is detected
+        Quagga.onDetected(function(data) {
+            const barcode = data.codeResult.code;
+            console.log("Barcode detected: ", barcode);
+            document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid: ${barcode}</span>`;
+            Quagga.stop(); // Stop the camera after detection
+        });
+
+        // Stop camera when button is clicked
+        document.getElementById('stop-camera').addEventListener('click', function() {
+            Quagga.stop();
+            document.getElementById('result').innerHTML = `<span class="invalid-barcode">Camera stopped.</span>`;
+        });
+    </script>
+</body>
+
+
+
+        <!-- Location Tracking Section -->
+        <h2>Location Tracking</h2>
+        <button id="location-on-btn">Enable Location</button>
+        <button id="location-off-btn" style="display:none;">Disable Location</button>
+        <p id="location-status">Location status: Not enabled</p>
+    </div>
+
+    <footer>
+        <p>&copy; Putco Bus Driver App</p>
+    </footer>
+
+    <script src="driverjs.js"></script>
+</body>
+</html>
+
