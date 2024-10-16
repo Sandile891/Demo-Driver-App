@@ -196,3 +196,71 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+let videoStream = null;  // To hold the video stream for stopping later
+let scannedBarcodes = [];  // Array to store multiple scanned barcodes
+let maxBarcodes = 20;      // Set how many barcodes you want to scan before stopping
+
+// Function to start the camera
+function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(function (stream) {
+            videoStream = stream;
+            const video = document.querySelector('video');
+            video.srcObject = stream;
+            video.play();
+
+            // Start scanning barcodes
+            scanBarcode();
+        })
+        .catch(function (err) {
+            console.log('Error starting camera: ' + err);
+        });
+}
+
+// Function to scan barcode (using a barcode scanner library like Quagga or any custom implementation)
+function scanBarcode() {
+    const video = document.querySelector('video');
+    
+    // Assuming you're using a library like Quagga.js or any other barcode scanning library
+    // Example: Quagga.onDetected(callback);
+    // Callback function when barcode is detected:
+    Quagga.onDetected(function (result) {
+        const barcode = result.codeResult.code;
+
+        if (!scannedBarcodes.includes(barcode)) {
+            scannedBarcodes.push(barcode);
+            console.log('Barcode Scanned: ' + barcode);
+            
+            // Display the scanned barcodes on the page
+            displayScannedBarcodes();
+        }
+
+        // Stop scanning if maxBarcodes is reached
+        if (scannedBarcodes.length >= maxBarcodes) {
+            stopCamera();
+        }
+    });
+}
+
+// Function to display the scanned barcodes
+function displayScannedBarcodes() {
+    const barcodeList = document.getElementById('barcode-list');
+    barcodeList.innerHTML = '';  // Clear list before updating
+    scannedBarcodes.forEach(function (barcode) {
+        const listItem = document.createElement('li');
+        listItem.textContent = barcode + ' - VALID';
+        barcodeList.appendChild(listItem);
+    });
+}
+
+// Function to stop the camera
+function stopCamera() {
+    if (videoStream) {
+        let tracks = videoStream.getTracks();
+        tracks.forEach(track => track.stop());  // Stop all tracks to stop the camera
+        console.log('Camera stopped');
+    }
+}
+
+// Add event listener for the "Stop Camera" button
+document.getElementById('stopCameraButton').addEventListener('click', stopCamera);
