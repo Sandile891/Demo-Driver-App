@@ -77,8 +77,22 @@
 </head>
 <body>
     <h1>Barcode Scanning</h1>
+    <body>
+    <h1>Barcode Scanning & Location Tracking</h1>
+    
     <button onclick="startCamera()">Start Camera</button>
     <button id="stopCameraButton">Stop Camera</button>
+
+    <video></video>
+
+    <h2>Scanned Barcodes</h2>
+    <ul id="barcode-list"></ul>
+
+    <h2>Location Tracking</h2>
+    <button id="enableLocationButton">Enable Location</button>
+    <p id="location-status">Location Status: Not enabled</p>
+</body>
+
     
     <video></video>
 
