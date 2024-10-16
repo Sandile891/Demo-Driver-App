@@ -7,43 +7,79 @@
     <!-- QuaggaJS for barcode scanning -->
     <link rel="manifest" href="manifest.json">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <!-- Firebase SDK (if needed for location data to Firestore) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
     <link rel="stylesheet" href="drivercss.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         body {
-            font-family: serif;
+            font-family: 'Arial', sans-serif;
             text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #333;
         }
         #result {
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 16px;
+            color: #333;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
         }
         .button {
-            margin: 10px;
-            padding: 10px;
+            width: 80%;
+            max-width: 300px;
+            padding: 15px;
             background-color: #008000;
             color: white;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
         .button:hover {
             background-color: #005000;
         }
+        .button:active {
+            background-color: #003500;
+        }
         #camera-container {
-            width: 640px;
+            width: 100%;
+            max-width: 640px;
             height: 480px;
-            margin: auto;
+            margin: 20px auto;
             display: none; /* Initially hidden */
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #555;
         }
     </style>
 </head>
 <body>
     <h1>Bus Driver App - Barcode & Location</h1>
-    
-    <!-- Buttons for enabling location, starting/stopping the camera -->
-    <button class="button" id="enable-location">Enable Location</button>
-    <button class="button" id="start-camera">Start Camera & Scan Barcodes</button>
-    <button class="button" id="stop-camera">Stop Camera</button>
+
+    <!-- Buttons for enabling/disabling location, starting/stopping the camera -->
+    <div class="button-container">
+        <button class="button" id="enable-location">Enable Location</button>
+        <button class="button" id="disable-location">Disable Location</button>
+        <button class="button" id="start-camera">Start Camera & Scan Barcodes</button>
+        <button class="button" id="stop-camera">Stop Camera</button>
+    </div>
 
     <!-- Camera container for live stream -->
     <div id="camera-container"></div>
@@ -55,44 +91,65 @@
         <p>&copy; Putco Bus Driver App</p>
     </footer>
 
+    <script src="driverjs.js"></script>
+
     <script>
-        // Function to handle location fetching
+        let locationEnabled = false;
+        let locationWatcher;
+
+        // Enable location tracking
         document.getElementById('enable-location').addEventListener('click', function() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
+                locationEnabled = true;
+                locationWatcher = navigator.geolocation.watchPosition(function(position) {
                     const lat = position.coords.latitude;
                     const long = position.coords.longitude;
                     console.log("Location: ", lat, long);
-
-                    // Display location in result section
-                    document.getElementById('result').innerHTML = `Location: ${lat}, ${long}`;
+                    document.getElementById('result').innerHTML = `<span class="valid-location">Location sent: ${lat}, ${long}</span>`;
+                    // Send location to Firestore
+                    // Example Firestore code (ensure Firebase setup):
+                    // firebase.firestore().collection('bus-locations').add({
+                    //     latitude: lat,
+                    //     longitude: long,
+                    //     timestamp: new Date()
+                    // });
                 }, function(error) {
-                    document.getElementById('result').innerHTML = 'Error fetching location';
+                    console.error("Error getting location", error);
                 });
+                alert("Location tracking enabled.");
             } else {
-                document.getElementById('result').innerHTML = 'Geolocation is not supported by this browser.';
+                alert("Geolocation is not supported by this browser.");
             }
         });
 
-        // Function to initialize Quagga for barcode scanning
+        // Disable location tracking
+        document.getElementById('disable-location').addEventListener('click', function() {
+            if (locationEnabled) {
+                navigator.geolocation.clearWatch(locationWatcher);
+                locationEnabled = false;
+                alert("Location tracking disabled.");
+            }
+        });
+
+        // Initialize Quagga barcode scanning
         function initQuagga() {
             Quagga.init({
                 inputStream: {
                     name: "Live",
                     type: "LiveStream",
-                    target: document.querySelector('#camera-container'), // Camera target
+                    target: document.querySelector('#camera-container'),
                     constraints: {
                         width: 640,
                         height: 480,
-                        facingMode: "environment" // Use rear camera
+                        facingMode: "environment"
                     }
                 },
                 decoder: {
-                    readers: ["ean_reader"] // Barcode type (e.g. ean_reader)
+                    readers: ["ean_reader"] // Add your barcode type here
                 }
             }, function(err) {
                 if (err) {
-                    console.error("Error initializing Quagga: ", err);
+                    console.log(err);
                     return;
                 }
                 console.log("Barcode scanning initialized.");
@@ -100,29 +157,28 @@
             });
         }
 
-        // Event listener for Start Camera button
+        // Start barcode scanning
         document.getElementById('start-camera').addEventListener('click', function() {
-            document.getElementById('camera-container').style.display = 'block'; // Show camera
+            document.getElementById('camera-container').style.display = 'block';
             initQuagga();
-
-            // Process barcode detection
-            Quagga.onDetected(function(data) {
-                const barcode = data.codeResult.code;
-                console.log("Barcode detected: ", barcode);
-
-                // Display result and stop camera after first valid scan
-                document.getElementById('result').innerHTML = `Valid Barcode: ${barcode}`;
-                Quagga.stop();
-                document.getElementById('camera-container').style.display = 'none'; // Hide camera
-            });
         });
 
-        // Event listener for Stop Camera button
+        // Stop barcode scanning
         document.getElementById('stop-camera').addEventListener('click', function() {
             Quagga.stop();
-            document.getElementById('result').innerHTML = `Camera stopped.`;
-            document.getElementById('camera-container').style.display = 'none'; // Hide camera
+            document.getElementById('camera-container').style.display = 'none';
+            document.getElementById('result').innerHTML = 'Camera stopped.';
+        });
+
+        // Handle barcode detection
+        Quagga.onDetected(function(data) {
+            const barcode = data.codeResult.code;
+            console.log("Barcode detected: ", barcode);
+            document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid Barcode: ${barcode}</span>`;
+            // Optionally, send barcode to Firestore for validation
+            // firebase.firestore().collection('barcodes').where("barcode", "==", barcode).get().then(/** ... */);
         });
     </script>
 </body>
 </html>
+
