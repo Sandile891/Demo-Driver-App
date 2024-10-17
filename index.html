@@ -78,8 +78,8 @@
         }
 
         #camera-container {
-            width: 100%;
-            max-width: 300px;
+            width: 600%;
+            max-width: 400px;
             height: 300px;
             margin: 20px auto;
             display: none; /* Initially hidden */
@@ -157,8 +157,8 @@
                 type: "LiveStream",
                 target: document.querySelector('#camera-container'), // Camera container
                 constraints: {
-                    width: 200,
-                    height: 200,
+                    width: 600,
+                    height: 400,
                     facingMode: "environment" // Use the rear camera
                 }
             },
