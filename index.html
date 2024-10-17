@@ -13,22 +13,19 @@
     <link rel="stylesheet" href="drivercss.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
-
         /* Theme Colors */
-:root {
-    --dark-orange: #ff8c00;
-    --dark-grey: #2f2f2f;
-    dark-blue: #004080;
-    --white: #ffffff;
-}
+        :root {
+            --dark-blue: #004080;
+            --white: #ffffff;
+        }
 
-/* Header */
-header {
-    background-color: var(--dark-blue);
-    color: var(--white);
-    padding: 20px;
-    text-align: center;
-     dark-blue: #004080;
+        /* Header */
+        header {
+            background-color: var(--dark-blue);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+        }
 
         body {
             font-family: 'Arial', sans-serif;
@@ -37,17 +34,19 @@ header {
             padding: 0;
             background-color: #f9f9f9;
         }
+
         h1 {
             font-size: 24px;
             margin: 20px 0;
             color: #333;
-            dark-blue: #004080;
         }
+
         #result {
             margin-top: 20px;
             font-size: 16px;
             color: #333;
         }
+
         .button-container {
             display: flex;
             flex-direction: column;
@@ -56,6 +55,7 @@ header {
             gap: 15px;
             margin-top: 30px;
         }
+
         .button {
             width: 80%;
             max-width: 300px;
@@ -68,12 +68,15 @@ header {
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
+
         .button:hover {
             background-color: #005000;
         }
+
         .button:active {
             background-color: #003500;
         }
+
         #camera-container {
             width: 100%;
             max-width: 200px;
@@ -81,6 +84,7 @@ header {
             margin: 20px auto;
             display: none; /* Initially hidden */
         }
+
         footer {
             margin-top: 40px;
             font-size: 14px;
@@ -89,7 +93,9 @@ header {
     </style>
 </head>
 <body>
-    <h1>Demo Driver App - Barcode & Location</h1>
+    <header>
+        <h1>Demo Driver App - Barcode & Location</h1>
+    </header>
 
     <!-- Buttons for enabling/disabling location, starting/stopping the camera -->
     <div class="button-container">
@@ -124,13 +130,6 @@ header {
                     const long = position.coords.longitude;
                     console.log("Location: ", lat, long);
                     document.getElementById('result').innerHTML = `<span class="valid-location">Location sent: ${lat}, ${long}</span>`;
-                    // Send location to Firestore
-                    // Example Firestore code (ensure Firebase setup):
-                    // firebase.firestore().collection('bus-locations').add({
-                    //     latitude: lat,
-                    //     longitude: long,
-                    //     timestamp: new Date()
-                    // });
                 }, function(error) {
                     console.error("Error getting location", error);
                 });
@@ -193,12 +192,8 @@ header {
             const barcode = data.codeResult.code;
             console.log("Barcode detected: ", barcode);
             document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid Barcode: ${barcode}</span>`;
-            // Optionally, send barcode to Firestore for validation
-            // firebase.firestore().collection('barcodes').where("barcode", "==", barcode).get().then(/** ... */);
         });
     </script>
-    <link rel="stylesheet" href="drivercss.css">
 </body>
-    <link rel="stylesheet" href="drivercss.css">
 </html>
 
