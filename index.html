@@ -28,6 +28,7 @@ header {
     color: var(--white);
     padding: 20px;
     text-align: center;
+}
         body {
             font-family: 'Arial', sans-serif;
             text-align: center;
@@ -73,8 +74,8 @@ header {
         }
         #camera-container {
             width: 100%;
-            max-width: 640px;
-            height: 480px;
+            max-width: 400px;
+            height: 300px;
             margin: 20px auto;
             display: none; /* Initially hidden */
         }
@@ -154,8 +155,8 @@ header {
                     type: "LiveStream",
                     target: document.querySelector('#camera-container'),
                     constraints: {
-                        width: 400,
-                        height: 300,
+                        width: 300,
+                        height: 250,
                         facingMode: "environment"
                     }
                 },
