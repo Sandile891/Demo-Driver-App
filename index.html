@@ -194,6 +194,56 @@
             document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid Barcode: ${barcode}</span>`;
         });
     </script>
+    <script>
+    // Initialize Quagga barcode scanning
+    function initQuagga() {
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#camera-container'), // Camera container
+                constraints: {
+                    width: 640,
+                    height: 480,
+                    facingMode: "environment" // Use the rear camera
+                }
+            },
+            decoder: {
+                readers: ["code_128_reader", "upc_reader", "ean_reader"] // Adding Code 128 and UPC readers
+            }
+        }, function(err) {
+            if (err) {
+                console.log(err);
+                alert("Error initializing Quagga: " + err);
+                return;
+            }
+            console.log("Quagga initialized successfully.");
+            Quagga.start(); // Start the scanner
+        });
+    }
+
+    // Start barcode scanning
+    document.getElementById('start-camera').addEventListener('click', function() {
+        document.getElementById('camera-container').style.display = 'block';
+        initQuagga();
+    });
+
+    // Stop barcode scanning
+    document.getElementById('stop-camera').addEventListener('click', function() {
+        Quagga.stop();
+        document.getElementById('camera-container').style.display = 'none';
+        document.getElementById('result').innerHTML = 'Camera stopped.';
+    });
+
+    // Handle barcode detection
+    Quagga.onDetected(function(data) {
+        const barcode = data.codeResult.code;
+        console.log("Barcode detected: ", barcode);
+        document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid Barcode: ${barcode}</span>`;
+        // Optionally, send barcode to Firestore for validation
+    });
+</script>
+
 </body>
 </html>
 
