@@ -147,52 +147,6 @@
                 alert("Location tracking disabled.");
             }
         });
-
-        // Initialize Quagga barcode scanning
-        function initQuagga() {
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: document.querySelector('#camera-container'),
-                    constraints: {
-                        width: 300,
-                        height: 250,
-                        facingMode: "environment"
-                    }
-                },
-                decoder: {
-                    readers: ["ean_reader"] // Add your barcode type here
-                }
-            }, function(err) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                console.log("Barcode scanning initialized.");
-                Quagga.start();
-            });
-        }
-
-        // Start barcode scanning
-        document.getElementById('start-camera').addEventListener('click', function() {
-            document.getElementById('camera-container').style.display = 'block';
-            initQuagga();
-        });
-
-        // Stop barcode scanning
-        document.getElementById('stop-camera').addEventListener('click', function() {
-            Quagga.stop();
-            document.getElementById('camera-container').style.display = 'none';
-            document.getElementById('result').innerHTML = 'Camera stopped.';
-        });
-
-        // Handle barcode detection
-        Quagga.onDetected(function(data) {
-            const barcode = data.codeResult.code;
-            console.log("Barcode detected: ", barcode);
-            document.getElementById('result').innerHTML = `<span class="valid-barcode">Valid Barcode: ${barcode}</span>`;
-        });
     </script>
     <script>
     // Initialize Quagga barcode scanning
@@ -203,8 +157,8 @@
                 type: "LiveStream",
                 target: document.querySelector('#camera-container'), // Camera container
                 constraints: {
-                    width: 640,
-                    height: 480,
+                    width: 200,
+                    height: 200,
                     facingMode: "environment" // Use the rear camera
                 }
             },
