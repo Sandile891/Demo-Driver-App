@@ -18,7 +18,7 @@
 :root {
     --dark-orange: #ff8c00;
     --dark-grey: #2f2f2f;
-    --dark-blue: #004080;
+    dark-blue: #004080;
     --white: #ffffff;
 }
 
@@ -40,6 +40,7 @@ header {
             font-size: 24px;
             margin: 20px 0;
             color: #333;
+            dark-blue: #004080;
         }
         #result {
             margin-top: 20px;
@@ -74,8 +75,8 @@ header {
         }
         #camera-container {
             width: 100%;
-            max-width: 400px;
-            height: 300px;
+            max-width: 200px;
+            height: 200px;
             margin: 20px auto;
             display: none; /* Initially hidden */
         }
@@ -87,7 +88,7 @@ header {
     </style>
 </head>
 <body>
-    <h1>Bus Driver App - Barcode & Location</h1>
+    <h1>Demo Driver App - Barcode & Location</h1>
 
     <!-- Buttons for enabling/disabling location, starting/stopping the camera -->
     <div class="button-container">
@@ -104,7 +105,7 @@ header {
     <div id="result">No barcode detected yet.</div>
 
     <footer>
-        <p>&copy; Putco Bus Driver App</p>
+        <p>&copy; Demo Bus Driver App</p>
     </footer>
 
     <script src="driverjs.js"></script>
