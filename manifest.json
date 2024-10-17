@@ -1,6 +1,6 @@
 {
-  "name": "Putco Bus Driver App",
-  "short_name": "Putco Driver App",
+  "name": "DEMO Bus Driver App",
+  "short_name": "DEMO Driver App",
   "description": "Help bus be trackable for cutomers to know the bus location.",
   "start_url": "index.html",
   "display": "standalone",
